@@ -5,14 +5,15 @@
 ![C](https://img.shields.io/badge/C-%2300599C.svg?style=flat&logo=c&logoColor=white)
 ![C++](https://img.shields.io/badge/C++-%2300599C.svg?style=flat&logo=c%2B%2B&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=flat&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-%23150458.svg?style=flat&logo=pandas&logoColor=white)
+![PyAutoGUI](https://img.shields.io/badge/PyAutoGUI-%2300A9E0.svg?style=flat&logo=python&logoColor=white)
+![PyWhatKit](https://img.shields.io/badge/PyWhatKit-%2300C4B4.svg?style=flat&logo=python&logoColor=white)
 ![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?style=flat&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-%231572B6.svg?style=flat&logo=css3&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-%23F7DF1E.svg?style=flat&logo=javascript&logoColor=black)
 ![PHP](https://img.shields.io/badge/PHP-%23777BB4.svg?style=flat&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-%234479A1.svg?style=flat&logo=mysql&logoColor=white)
-![HeidiSQL](https://img.shields.io/badge/HeidiSQL-%230E67AB.svg?style=flat&logo=database&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-%23F05033.svg?style=flat&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-%23181717.svg?style=flat&logo=github&logoColor=white)
 ![PyCharm](https://img.shields.io/badge/PyCharm-%23000000.svg?style=flat&logo=pycharm&logoColor=white)
@@ -20,6 +21,7 @@
 ![WebStorm](https://img.shields.io/badge/WebStorm-%23000000.svg?style=flat&logo=webstorm&logoColor=white)
 ![Visual Studio Code](https://img.shields.io/badge/VS%20Code-%23007ACC.svg?style=flat&logo=visual-studio-code&logoColor=white)
 ![Google AppSheet](https://img.shields.io/badge/AppSheet-%234285F4.svg?style=flat&logo=google&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat&logo=amazon-aws&logoColor=white)
 ![Power BI](https://img.shields.io/badge/Power%20BI-%23F2C811.svg?style=flat&logo=powerbi&logoColor=black)
 ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=flat&logo=notion&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-%23FCC624.svg?style=flat&logo=linux&logoColor=black)
@@ -29,18 +31,3 @@
 ![CapCut](https://img.shields.io/badge/CapCut-%23000000.svg?style=flat&logo=capcut&logoColor=white)
 ![Meta Spark Studio](https://img.shields.io/badge/Meta%20Spark%20Studio-%230077FF.svg?style=flat&logo=snapchat&logoColor=white)
 ![Meta Ads](https://img.shields.io/badge/Meta%20Ads-%23187CFF.svg?style=flat&logo=facebook&logoColor=white)
-
----
-
-![Dynamic Profile](https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=Lealwbs&theme=radical)
-
-![Estatísticas de Stars](https://github-profile-summary-cards.vercel.app/api/cards/stats?username=Lealwbs&theme=radical) 
-![Estilo Codificador](https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=Lealwbs&theme=radical)
-
-![Resumo de Repositórios](https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=Lealwbs&theme=radical) 
-![Languages Pie Chart](https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=Lealwbs&theme=radical)
-
-
-
-
-
