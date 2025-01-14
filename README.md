@@ -27,7 +27,3 @@
 ![Linux](https://img.shields.io/badge/Linux-%23FCC624.svg?style=flat&logo=linux&logoColor=black)
 ![Windows](https://img.shields.io/badge/Windows-%230078D6.svg?style=flat&logo=windows&logoColor=white)
 ![Adobe Photoshop](https://img.shields.io/badge/Adobe%20Photoshop-%2331A8FF.svg?style=flat&logo=adobe-photoshop&logoColor=white)
-![Canva](https://img.shields.io/badge/Canva-%2300C4CC.svg?style=flat&logo=canva&logoColor=white)
-![CapCut](https://img.shields.io/badge/CapCut-%23000000.svg?style=flat&logo=capcut&logoColor=white)
-![Meta Spark Studio](https://img.shields.io/badge/Meta%20Spark%20Studio-%230077FF.svg?style=flat&logo=snapchat&logoColor=white)
-![Meta Ads](https://img.shields.io/badge/Meta%20Ads-%23187CFF.svg?style=flat&logo=facebook&logoColor=white)
