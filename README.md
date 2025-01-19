@@ -26,4 +26,3 @@
 ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=flat&logo=notion&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-%23FCC624.svg?style=flat&logo=linux&logoColor=black)
 ![Windows](https://img.shields.io/badge/Windows-%230078D6.svg?style=flat&logo=windows&logoColor=white)
-![Adobe Photoshop](https://img.shields.io/badge/Adobe%20Photoshop-%2331A8FF.svg?style=flat&logo=adobe-photoshop&logoColor=white)
