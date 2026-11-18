@@ -1,0 +1,41 @@
+name: LinkedIn Cards
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-main-updates
+  cancel-in-progress: false
+
+jobs:
+  linkedin-cards:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check APIFY_API_TOKEN
+        id: check_token
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
+        run: |
+          if [ -z "$APIFY_TOKEN" ]; then
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping LinkedIn Cards generation: APIFY_API_TOKEN secret is not configured yet."
+          else
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check_token.outputs.has_token == 'true'
+
+      - uses: alexcerezo/linkedin-cards@main
+        if: steps.check_token.outputs.has_token == 'true'
+        with:
+          apify_api_token: ${{ secrets.APIFY_API_TOKEN }}
+          linkedin_username: ${{ vars.LINKEDIN_USERNAME || 'lealwbs' }}
+          max_cards_to_generate: 4
+          language: en
+          include_reposts: 'true'

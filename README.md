@@ -1,19 +1,27 @@
-# Olá! Eu sou o Ítalo Leal 👋
+<div align="center">
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lealwbs)  [![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/Leal#8905)   [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/Lealwbs) [![Lattes](https://img.shields.io/badge/Lattes-%230030A0.svg?style=for-the-badge&logo=researchgate&logoColor=white)](http://lattes.cnpq.br/4756437356720090) [![Email](https://img.shields.io/badge/Email-%23D14836.svg?style=for-the-badge&logo=gmail&logoColor=white)](mailto:italoleallanasantos@gmail.com)  
-
-![C](https://img.shields.io/badge/C-%2300599C.svg?style=flat&logo=c&logoColor=white)
-![C++](https://img.shields.io/badge/C++-%2300599C.svg?style=flat&logo=c%2B%2B&logoColor=white)
-![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=flat&logo=python&logoColor=white)
-![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?style=flat&logo=html5&logoColor=white)
-![CSS](https://img.shields.io/badge/CSS-%231572B6.svg?style=flat&logo=css3&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-%23F7DF1E.svg?style=flat&logo=javascript&logoColor=black)
-![PHP](https://img.shields.io/badge/PHP-%23777BB4.svg?style=flat&logo=php&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-%234479A1.svg?style=flat&logo=mysql&logoColor=white)
-  
+<div>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/lealwbs/lealwbs/output/pacman-contribution-graph-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/lealwbs/lealwbs/output/pacman-contribution-graph.svg">
-  <img alt="pacman contribution graph" src="https://raw.githubusercontent.com/lealwbs/lealwbs/output/pacman-contribution-graph.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="./profile/hero-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./profile/hero-light.svg">
+  <img width="845" alt="Ítalo Leal — Hero" src="./profile/hero-light.svg">
 </picture>
+</div>
+<div>
+<a href="https://www.linkedin.com/in/lealwbs"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/social-linkedin-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/social-linkedin-light.svg"><img width="162" alt="LinkedIn" src="./assets/social-linkedin-light.svg"></picture></a><a href="mailto:italoleallanasantos@gmail.com"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/social-email-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/social-email-light.svg"><img width="162" alt="Email" src="./assets/social-email-light.svg"></picture></a><a href="http://lattes.cnpq.br/4756437356720090"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/social-lattes-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/social-lattes-light.svg"><img width="162" alt="Lattes" src="./assets/social-lattes-light.svg"></picture></a><a href="https://www.instagram.com/Lealwbs"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/social-instagram-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/social-instagram-light.svg"><img width="162" alt="Instagram" src="./assets/social-instagram-light.svg"></picture></a><a href="https://discord.com/users/Leal#8905"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/social-discord-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/social-discord-light.svg"><img width="152" alt="Discord" src="./assets/social-discord-light.svg"></picture></a>
+</div>
+<div>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./profile/readme-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./profile/readme-light.svg">
+  <img width="845" alt="Ítalo Leal — GitHub Profile" src="./profile/readme-light.svg">
+</picture>
+</div>
+
+<!-- BEGIN METRICS -->
+<!-- END METRICS -->
+
+<!-- BEGIN LINKEDIN-CARDS -->
+<!-- END LINKEDIN-CARDS -->
+
+</div>
