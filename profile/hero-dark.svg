@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="845" height="86" viewBox="0 0 845 86" fill="none">
+  <defs>
+    <linearGradient id="heroNameFlow_dark" gradientUnits="userSpaceOnUse" x1="250" y1="0" x2="595" y2="0" spreadMethod="reflect">
+      <stop offset="0%" stop-color="#8ab4f8">
+        <animate attributeName="stop-color" values="#8ab4f8;#c58af9;#f28b82;#39c5cf;#8ab4f8" dur="7s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#c58af9">
+        <animate attributeName="stop-color" values="#c58af9;#f28b82;#39c5cf;#8ab4f8;#c58af9" dur="7s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#39c5cf">
+        <animate attributeName="stop-color" values="#39c5cf;#8ab4f8;#c58af9;#f28b82;#39c5cf" dur="7s" repeatCount="indefinite"/>
+      </stop>
+      <animate attributeName="x1" values="250;405;250" dur="7s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="595;750;595" dur="7s" repeatCount="indefinite"/>
+    </linearGradient>
+    <linearGradient id="heroPillFlow_dark" gradientUnits="userSpaceOnUse" x1="265" y1="0" x2="580" y2="0" spreadMethod="reflect">
+      <stop offset="0%" stop-color="#8ab4f8">
+        <animate attributeName="stop-color" values="#8ab4f8;#c58af9;#f28b82;#39c5cf;#8ab4f8" dur="7s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#c58af9">
+        <animate attributeName="stop-color" values="#c58af9;#f28b82;#39c5cf;#8ab4f8;#c58af9" dur="7s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#39c5cf">
+        <animate attributeName="stop-color" values="#39c5cf;#8ab4f8;#c58af9;#f28b82;#39c5cf" dur="7s" repeatCount="indefinite"/>
+      </stop>
+      <animate attributeName="x1" values="265;407;265" dur="7s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="580;722;580" dur="7s" repeatCount="indefinite"/>
+    </linearGradient>
+  </defs>
+
+  <text x="422.5" y="42" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="45" font-weight="900" letter-spacing="-0.8" fill="url(#heroNameFlow_dark)" stroke="url(#heroNameFlow_dark)" stroke-width="2.0" paint-order="stroke">Ítalo Leal</text>
+
+  <rect x="270.5" y="56" width="304" height="25" rx="12.5" fill="#1a2638" stroke="url(#heroPillFlow_dark)" stroke-width="1.2" stroke-opacity="0.72"/>
+  <text x="422.5" y="72.5" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif" font-size="11.2" font-weight="500" fill="#e3e3e3" opacity="1">Information Systems · UFMG<animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.30;0.333;0.967;1" dur="12s" repeatCount="indefinite"/></text><text x="422.5" y="72.5" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif" font-size="11.2" font-weight="500" fill="#e3e3e3" opacity="0">SAP ABAP Consultant · Seidor Brasil<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.30;0.333;0.633;0.667;1" dur="12s" repeatCount="indefinite"/></text><text x="422.5" y="72.5" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif" font-size="11.2" font-weight="500" fill="#e3e3e3" opacity="0">AI Agents, Automation &amp; Systems Engineering<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.633;0.667;0.967;1" dur="12s" repeatCount="indefinite"/></text>
+</svg>
