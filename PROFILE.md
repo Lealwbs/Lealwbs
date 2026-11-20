@@ -32,19 +32,19 @@
 - **ML/BI, Cloud, AI Agents & Dev Tools:** Pandas, NumPy, Streamlit, Power BI, Amazon Web Services (AWS), Azure, Vercel, Google Antigravity, Google Gemini, Gemini CLI, Codex, Visual Studio Code, Eclipse, Git, GitHub, Linux, LaTeX
 
 ## GitHub Activity
-- **All-Time Contributions:** 1,484
-- **Commits (1y):** 985
+- **All-Time Contributions:** 1,493
+- **Commits (1y):** 994
 - **Current Streak / Longest Streak:** 25d / 26d
 - **Public Repositories:** 24
 - **Pull Requests / Issues:** 7 / 23
-- **30d Daily Average:** 12.4
+- **30d Daily Average:** 12.7
 - **Stars / Followers:** 8 / 24
-- **Last 30 Days:** 371 total, 73 peak (19/11), 28/30 active days
+- **Last 30 Days:** 380 total, 77 peak (19/11), 28/30 active days
 - **Top Repository Languages:** Python (82%), C (8%), HTML (3%), C++ (2%)
 
 ## Commit Schedule (BRT / UTC-3)
-- **Time Buckets:** Morning (06h–12h): 46 (8.0%) | Daytime (12h–18h): 191 (33.1%) | Evening (18h–24h): 271 (47.0%) | Night (00h–06h): 69 (12.0%)
-- **Weekday Distribution:** Mon: 165 | Tue: 220 | Wed: 120 | Thu: 242 | Fri: 166 | Sat: 85 | Sun: 27
+- **Time Buckets:** Morning (06h–12h): 46 (8.2%) | Daytime (12h–18h): 185 (33.1%) | Evening (18h–24h): 262 (46.9%) | Night (00h–06h): 66 (11.8%)
+- **Weekday Distribution:** Mon: 165 | Tue: 222 | Wed: 122 | Thu: 246 | Fri: 166 | Sat: 86 | Sun: 27
 
 ## Recently Committed Repositories
 - **TP-ES-Urna-Eleitoral** (Java, 19/11): Repositório dedicado à implementação do Trabalho Pr…
