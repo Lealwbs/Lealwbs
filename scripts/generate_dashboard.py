@@ -138,6 +138,29 @@ LANG_COLORS: dict[str, str] = {
     "Rust": "#dea584",
 }
 
+EDITOR_COLORS: dict[str, str] = {
+    "Antigravity IDE": "#9B72CB",
+    "Antigravity Desktop": "#22B8CF",
+    "Antigravity": "#9B72CB",
+    "VS Code": "#0086E6",
+    "Visual Studio": "#854CC7",
+    "Copilot CLI": "#3FB950",
+    "Copilot": "#8957E5",
+    "Codex Vscode": "#10A37F",
+    "Codex": "#10A37F",
+    "Eclipse": "#F7941E",
+    "Cursor": "#22D3EE",
+    "Neovim": "#57A143",
+    "Vim": "#57A143",
+    "IntelliJ IDEA": "#FE315D",
+    "PyCharm": "#21D789",
+    "Jupyter": "#F37626",
+    "JupyterLab": "#F37626",
+    "Android Studio": "#3DDC84",
+    "Xcode": "#147EFB",
+    "SAP GUI": "#008FD3",
+}
+
 
 def get_github_token() -> str:
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
@@ -709,7 +732,67 @@ def fetch_platform_metrics() -> list[dict[str, Any]]:
     except Exception:
         pass
 
+    # 6. Brainly (@Leallana) — static verified metrics (Brainly has no public API)
+    platforms.append({
+        "key": "brainly",
+        "name": "Brainly",
+        "handle": "@Leallana",
+        "hero_val": "1,007",
+        "hero_unit": "answers",
+        "right_meta": "65,036 pts",
+        "sub_text": "194 best · 8.1k thanks · 866 Math",
+        "dot_color": "#57D782",
+    })
+
     return platforms
+
+
+PLAT_ICON_PATHS = {
+    "leetcode": (
+        "M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 "
+        "5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 "
+        "1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 "
+        "1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 "
+        "2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 "
+        "2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 "
+        "1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 "
+        "1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"
+    ),
+    "chesscom": (
+        "M12 0a3.85 3.85 0 0 0-3.875 3.846A3.84 3.84 0 0 0 9.73 6.969l-2.79 1.85c0 .622.144 1.114.434 "
+        "1.649H9.83c-.014.245-.014.549-.014.925 0 .025.003.048.006.071-.064 1.353-.507 3.472-3.62 5.842-.816.625-1.423 "
+        "1.495-1.806 2.533a.33.33 0 0 0-.045.084 8.124 8.124 0 0 0-.39 2.516c0 .1.216 1.561 8.038 1.561s8.038-1.46 "
+        "8.038-1.561c0-2.227-.824-4.048-2.24-5.133-4.034-3.08-3.586-5.74-3.644-6.838h2.458c.29-.535.434-1.027.434-1.649l-2.79-1.836a3.86 "
+        "3.86 0 0 0 1.604-3.123A3.873 3.873 0 0 0 13.445.275c-.004-.002-.01.004-.015.004A3.76 3.76 0 0 0 12 0Z"
+    ),
+    "lichess": (
+        "M10.457 6.161a.237.237 0 0 0-.296.165c-.8 2.785 2.819 5.579 5.214 7.428.653.504 1.216.939 1.591 1.292 "
+        "1.745 1.642 2.564 2.851 2.733 3.178a.24.24 0 0 0 .275.122c.047-.013 4.726-1.3 3.934-4.574a.257.257 0 0 0-.023-.06L18.204 "
+        "3.407 18.93.295a.24.24 0 0 0-.262-.293c-1.7.201-3.115.435-4.5 1.425-4.844-.323-8.718.9-11.213 3.539C.334 7.737-.246 "
+        "11.515.085 14.128c.763 5.655 5.191 8.631 9.081 9.532.993.229 1.974.34 2.923.34 3.344 0 6.297-1.381 7.946-3.85a.24.24 "
+        "0 0 0-.372-.3c-3.411 3.527-9.002 4.134-13.296 1.444-4.485-2.81-6.202-8.41-3.91-12.749C4.741 4.221 8.801 2.362 13.888 "
+        "3.31c.056.01.115 0 .165-.029l.335-.197c.926-.546 1.961-1.157 2.873-1.279l-.694 1.993a.243.243 0 0 0 .02.202l6.082 "
+        "10.192c-.193 2.028-1.706 2.506-2.226 2.611-.287-.645-.814-1.364-2.306-2.803-.422-.407-1.21-.941-2.124-1.56-2.364-1.601-5.937-4.02-5.391-5.984a.239.239 "
+        "0 0 0-.165-.295z"
+    ),
+    "huggingface": (
+        "M12.025 1.13c-5.77 0-10.449 4.647-10.449 10.378 0 1.112.178 2.181.503 3.185.064-.222.203-.444.416-.577a.96.96 "
+        "0 0 1 .524-.15c.293 0 .584.124.84.284.278.173.48.408.71.694.226.282.458.611.684.951v-.014c.017-.324.106-.622.264-.874s.403-.487.762-.543c.3-.047.596.06.787.203s.31.313.4.467c.15.257.212.468.233.542.01.026.653 "
+        "1.552 1.657 2.54.616.605 1.01 1.223 1.082 1.912.055.537-.096 1.059-.38 1.572.637.121 1.294.187 1.967.187.657 0 1.298-.063 "
+        "1.921-.178-.287-.517-.44-1.041-.384-1.581.07-.69.465-1.307 1.081-1.913 1.004-.987 1.647-2.513 1.657-2.539.021-.074.083-.285.233-.542.09-.154.208-.323.4-.467a1.08 "
+        "1.08 0 0 1 .787-.203c.359.056.604.29.762.543s.247.55.265.874v.015c.225-.34.457-.67.683-.952.23-.286.432-.52.71-.694.257-.16.547-.284.84-.285a.97 "
+        ".97 0 0 1 .524.151c.228.143.373.388.43.625l.006.04a10.3 10.3 0 0 0 .534-3.273c0-5.731-4.678-10.378-10.449-10.378M8.327 "
+        "6.583a1.5 1.5 0 0 1 .713.174 1.487 1.487 0 0 1 .617 2.013c-.183.343-.762-.214-1.102-.094-.38.134-.532.914-.917.71a1.487 "
+        "1.487 0 0 1 .69-2.803m7.486 0a1.487 1.487 0 0 1 .689 2.803c-.385.204-.536-.576-.916-.71-.34-.12-.92.437-1.103.094a1.487 "
+        "1.487 0 0 1 .617-2.013 1.5 1.5 0 0 1 .713-.174m-10.68 1.55a.96.96 0 1 1 0 1.921.96.96 0 0 1 0-1.92m13.838 0a.96.96 0 1 1 0 1.92.96.96 0 0 1 0-1.92"
+    ),
+    "kaggle": (
+        "M5.4 2.5v19h2.9v-5.3l1.7-1.6 5.9 6.9h3.7l-7.5-8.9L18.9 6h-3.6l-7 6.8V2.5z"
+    ),
+    "brainly": (
+        "M4 2.5h16a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5H9.2L4.5 22v-3.5H4A2.5 2.5 0 0 1 1.5 16V5A2.5 2.5 0 0 1 4 2.5Zm4.5 3.7v8.6h4.2c1.9 0 3.1-.95 3.1-2.45 0-1.05-.62-1.78-1.58-2.05.75-.32 1.23-.96 1.23-1.85 0-1.35-1.08-2.25-2.85-2.25H8.5Zm2.1 1.65h1.75c.72 0 1.15.32 1.15.88 0 .58-.43.92-1.15.92H10.6V7.85Zm0 3.35h1.95c.82 0 1.28.34 1.28.96 0 .64-.46 1.0-1.28 1.0H10.6V11.2Z"
+    ),
+}
 
 
 def load_tech_stack_inner(theme_name: str, y_pos: int) -> str:
@@ -719,7 +802,7 @@ def load_tech_stack_inner(theme_name: str, y_pos: int) -> str:
     inner = re.sub(r"</svg>$", "", inner.strip())
     inner = re.sub(r'id="(i\d+_[^"]+)"', rf'id="ts_{theme_name}_\1"', inner)
     inner = re.sub(r'url\(#(i\d+_[^)]+)\)', rf'url(#ts_{theme_name}_\1)', inner)
-    return f'<svg x="21.5" y="{y_pos}" width="802" height="89" viewBox="0 0 802 89">{inner}</svg>'
+    return f'<svg x="21.5" y="{y_pos}" width="802" height="93" viewBox="0 0 802 93">{inner}</svg>'
 
 
 def apply_log_scale_pacman_colors(inner: str, theme_name: str, weeks_1y: list[dict[str, Any]]) -> str:
@@ -880,32 +963,21 @@ def render_unified_readme_svg(
     active_platforms = platforms or []
     has_platforms = len(active_platforms) > 0
 
-    # Floating Hero (profile/hero-{dark,light}.svg) + 5 Clickable Social Pills sit cleanly above this block.
-    # Band 1 (Tech Stack 17x2):             y = 18 .. 121 (svg at y=18, h=89)
-    # Band 2 (Pac-Man Contribution Graph):  y = 121 .. 265 (svg at y=131, h=126)
-    # Band 3..6 reuse clean relative layout with off = 265!
-    off = 265
+    # Floating Hero (profile/hero-{dark,light}.svg) + 1 row of 8 Clickable Pills sit cleanly above this block.
+    # Band 1 (Tech Stack 16x2):             y = 18 .. 125 (svg at y=18, h=93)
+    # Band 2 (Pac-Man Contribution Graph):  y = 125 .. 269 (svg at y=135, h=126)
+    # Band 3..6 reuse clean relative layout with off = 269!
+    off = 269
     base_bottom = 753 + off if has_waka else 530 + off
-    plat_card_h = 58
-    plat_row_gap = 12
-    if has_platforms:
-        n_plat = len(active_platforms)
-        if n_plat <= 3:
-            plat_rows_counts = [n_plat]
-        elif n_plat == 4:
-            plat_rows_counts = [2, 2]
-        elif n_plat == 5:
-            plat_rows_counts = [3, 2]
-        else:
-            plat_rows_counts = [3] * (n_plat // 3) + ([n_plat % 3] if n_plat % 3 else [])
-        n_plat_rows = len(plat_rows_counts)
-        height = base_bottom + 32 + n_plat_rows * plat_card_h + max(n_plat_rows - 1, 0) * plat_row_gap + 26
-    else:
-        plat_rows_counts = []
-        height = base_bottom + 26
+    bottom_keys = ("lichess", "chesscom", "brainly")
+    bottom_by_key = {p.get("key"): p for p in active_platforms}
+    bottom_platforms = [bottom_by_key[k] for k in bottom_keys if k in bottom_by_key]
+    has_bottom_platforms = len(bottom_platforms) > 0
+    plat_card_h = 66
+    height = (base_bottom + 30 + plat_card_h + 26) if has_bottom_platforms else (base_bottom + 26)
 
     tech_stack_svg = load_tech_stack_inner(theme_name, y_pos=18)
-    pacman_svg = load_pacman_inner(theme_name, y_pos=131, weeks_1y=gh.get("weeks_1y"))
+    pacman_svg = load_pacman_inner(theme_name, y_pos=135, weeks_1y=gh.get("weeks_1y"))
 
     # --- Band 3: Overview (compact 26..334) & Activity (wider 366..819) ---
     ov_items = [
@@ -1099,10 +1171,12 @@ def render_unified_readme_svg(
             ry = 590 + off + i * 23
             sec = float(e.get("total_seconds") or 0)
             pct = float(e.get("percent") or 0)
+            ed_col = EDITOR_COLORS.get(e["name"], t["accent"])
+            ed_ratio = math.sqrt(max(0.0, sec) / max_ed_sec) if sec > 0 else 0.0
             ed_rows.append(
                 f'<text x="384" y="{ry}" font-family="{SANS}" font-size="10.6" font-weight="500" fill="{t["text"]}">{html.escape(truncate(e["name"], 20))}</text>'
                 f'<text x="548" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.8" fill="{t["muted"]}">{html.escape(fmt_dur(sec))}</text>'
-                + render_pill_bar(556, ry - 7, 88, sec / max_ed_sec, t["accent"], t["bar_muted"])
+                + render_pill_bar(556, ry - 7, 88, ed_ratio, ed_col, t["bar_muted"])
                 + f'<text x="685" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.8" font-weight="600" fill="{t["subtext"]}">{pct:.1f}%</text>'
             )
 
@@ -1119,22 +1193,22 @@ def render_unified_readme_svg(
         pace_cards = f"""
   <rect x="713" y="{p_y0}" width="106" height="45" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
   <text x="723" y="{p_y0 + 16}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">All time</text>
-  <text x="723" y="{p_y0 + 35}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["accent_violet"]}">{html.escape(all_time_lbl)}</text>
+  <text x="723" y="{p_y0 + 35}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="url(#dashPaceFlow_{theme_name})">{html.escape(all_time_lbl)}</text>
 
   <rect x="713" y="{p_y0 + 53}" width="106" height="45" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
   <text x="723" y="{p_y0 + 69}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Daily avg</text>
-  <text x="723" y="{p_y0 + 88}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["accent_cyan"]}">{html.escape(daily_avg_lbl)}</text>
+  <text x="723" y="{p_y0 + 88}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["text"]}">{html.escape(daily_avg_lbl)}</text>
 
   <rect x="713" y="{p_y0 + 106}" width="106" height="45" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
   <text x="723" y="{p_y0 + 122}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Best day</text>
   <text x="810" y="{p_y0 + 122}" text-anchor="end" font-family="{MONO}" font-size="8.8" fill="{t["faint"]}">{html.escape(best_date_lbl)}</text>
-  <text x="723" y="{p_y0 + 141}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["accent_rose"]}">{html.escape(best_lbl)}</text>
+  <text x="723" y="{p_y0 + 141}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["text"]}">{html.escape(best_lbl)}</text>
 """
 
         waka_svg = f"""
   <!-- Band 6 Divider: WakaTime (3 Columns) -->
   <line x1="26" y1="{530 + off}" x2="819" y2="{530 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="26" y="{553 + off}" font-family="{SANS}" font-size="13.5" font-weight="700" fill="url(#dashWakaFlow_{theme_name})">WakaTime</text>
+  <text x="26" y="{553 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">WakaTime</text>
   <text x="26" y="{571 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["faint"]}">CODING LANGUAGES</text>
   <text x="384" y="{571 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["faint"]}">EDITORS</text>
   <text x="713" y="{571 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["faint"]}">PACE</text>
@@ -1146,84 +1220,37 @@ def render_unified_readme_svg(
 """
 
     platforms_svg = ""
-    if has_platforms:
-        plat_icon_paths = {
-            "leetcode": (
-                "M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 "
-                "5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 "
-                "1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 "
-                "1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 "
-                "2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 "
-                "2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 "
-                "1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 "
-                "1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"
-            ),
-            "chesscom": (
-                "M12 0a3.85 3.85 0 0 0-3.875 3.846A3.84 3.84 0 0 0 9.73 6.969l-2.79 1.85c0 .622.144 1.114.434 "
-                "1.649H9.83c-.014.245-.014.549-.014.925 0 .025.003.048.006.071-.064 1.353-.507 3.472-3.62 5.842-.816.625-1.423 "
-                "1.495-1.806 2.533a.33.33 0 0 0-.045.084 8.124 8.124 0 0 0-.39 2.516c0 .1.216 1.561 8.038 1.561s8.038-1.46 "
-                "8.038-1.561c0-2.227-.824-4.048-2.24-5.133-4.034-3.08-3.586-5.74-3.644-6.838h2.458c.29-.535.434-1.027.434-1.649l-2.79-1.836a3.86 "
-                "3.86 0 0 0 1.604-3.123A3.873 3.873 0 0 0 13.445.275c-.004-.002-.01.004-.015.004A3.76 3.76 0 0 0 12 0Z"
-            ),
-            "lichess": (
-                "M10.457 6.161a.237.237 0 0 0-.296.165c-.8 2.785 2.819 5.579 5.214 7.428.653.504 1.216.939 1.591 1.292 "
-                "1.745 1.642 2.564 2.851 2.733 3.178a.24.24 0 0 0 .275.122c.047-.013 4.726-1.3 3.934-4.574a.257.257 0 0 0-.023-.06L18.204 "
-                "3.407 18.93.295a.24.24 0 0 0-.262-.293c-1.7.201-3.115.435-4.5 1.425-4.844-.323-8.718.9-11.213 3.539C.334 7.737-.246 "
-                "11.515.085 14.128c.763 5.655 5.191 8.631 9.081 9.532.993.229 1.974.34 2.923.34 3.344 0 6.297-1.381 7.946-3.85a.24.24 "
-                "0 0 0-.372-.3c-3.411 3.527-9.002 4.134-13.296 1.444-4.485-2.81-6.202-8.41-3.91-12.749C4.741 4.221 8.801 2.362 13.888 "
-                "3.31c.056.01.115 0 .165-.029l.335-.197c.926-.546 1.961-1.157 2.873-1.279l-.694 1.993a.243.243 0 0 0 .02.202l6.082 "
-                "10.192c-.193 2.028-1.706 2.506-2.226 2.611-.287-.645-.814-1.364-2.306-2.803-.422-.407-1.21-.941-2.124-1.56-2.364-1.601-5.937-4.02-5.391-5.984a.239.239 "
-                "0 0 0-.165-.295z"
-            ),
-            "huggingface": (
-                "M12.025 1.13c-5.77 0-10.449 4.647-10.449 10.378 0 1.112.178 2.181.503 3.185.064-.222.203-.444.416-.577a.96.96 "
-                "0 0 1 .524-.15c.293 0 .584.124.84.284.278.173.48.408.71.694.226.282.458.611.684.951v-.014c.017-.324.106-.622.264-.874s.403-.487.762-.543c.3-.047.596.06.787.203s.31.313.4.467c.15.257.212.468.233.542.01.026.653 "
-                "1.552 1.657 2.54.616.605 1.01 1.223 1.082 1.912.055.537-.096 1.059-.38 1.572.637.121 1.294.187 1.967.187.657 0 1.298-.063 "
-                "1.921-.178-.287-.517-.44-1.041-.384-1.581.07-.69.465-1.307 1.081-1.913 1.004-.987 1.647-2.513 1.657-2.539.021-.074.083-.285.233-.542.09-.154.208-.323.4-.467a1.08 "
-                "1.08 0 0 1 .787-.203c.359.056.604.29.762.543s.247.55.265.874v.015c.225-.34.457-.67.683-.952.23-.286.432-.52.71-.694.257-.16.547-.284.84-.285a.97 "
-                ".97 0 0 1 .524.151c.228.143.373.388.43.625l.006.04a10.3 10.3 0 0 0 .534-3.273c0-5.731-4.678-10.378-10.449-10.378M8.327 "
-                "6.583a1.5 1.5 0 0 1 .713.174 1.487 1.487 0 0 1 .617 2.013c-.183.343-.762-.214-1.102-.094-.38.134-.532.914-.917.71a1.487 "
-                "1.487 0 0 1 .69-2.803m7.486 0a1.487 1.487 0 0 1 .689 2.803c-.385.204-.536-.576-.916-.71-.34-.12-.92.437-1.103.094a1.487 "
-                "1.487 0 0 1 .617-2.013 1.5 1.5 0 0 1 .713-.174m-10.68 1.55a.96.96 0 1 1 0 1.921.96.96 0 0 1 0-1.92m13.838 0a.96.96 0 1 1 0 1.92.96.96 0 0 1 0-1.92"
-            ),
-            "kaggle": (
-                "M5.4 2.5v19h2.9v-5.3l1.7-1.6 5.9 6.9h3.7l-7.5-8.9L18.9 6h-3.6l-7 6.8V2.5z"
-            ),
-        }
+    if has_bottom_platforms:
         plat_y0 = base_bottom
         p_gap = 12.0
+        n_plat = len(bottom_platforms)
+        card_w = (793.0 - (n_plat - 1) * p_gap) / n_plat
+        card_y = plat_y0 + 30
         plat_cards = []
-        plat_idx = 0
-        for row_idx, row_n in enumerate(plat_rows_counts):
-            card_y = plat_y0 + 32 + row_idx * (plat_card_h + plat_row_gap)
-            card_w = (793.0 - (row_n - 1) * p_gap) / row_n
-            for col_idx in range(row_n):
-                p = active_platforms[plat_idx]
-                plat_idx += 1
-                px = 26.0 + col_idx * (card_w + p_gap)
-                key = p.get("key") or ""
-                icon_col = t["text"] if key == "lichess" else p.get("dot_color", t["accent"])
-                hero_col = t["accent"] if key == "leetcode" else t["text"]
-                icon_d = plat_icon_paths.get(key, "")
-                icon_el = (
-                    f'<g transform="translate({px + 12:.1f}, {card_y + 9.0:.1f}) scale(0.52)"><path d="{icon_d}" fill="{icon_col}"/></g>'
-                    if icon_d
-                    else f'<circle cx="{px + 15:.1f}" cy="{card_y + 15.0}" r="3.2" fill="{icon_col}"/>'
-                )
-                plat_cards.append(
-                    f'<rect x="{px:.1f}" y="{card_y}" width="{card_w:.1f}" height="{plat_card_h}" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>'
-                    + icon_el
-                    + f'<text x="{px + 29:.1f}" y="{card_y + 18.5}" font-family="{SANS}" font-size="11.2" font-weight="600" fill="{t["text"]}">{html.escape(p["name"])}</text>'
-                    f'<text x="{px + card_w - 12:.1f}" y="{card_y + 18.5}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">{html.escape(p["handle"])}</text>'
-                    f'<text x="{px + 12:.1f}" y="{card_y + 37.5}" font-family="{MONO}" font-size="14.5" font-weight="700" fill="{hero_col}">{html.escape(p["hero_val"])} <tspan font-family="{SANS}" font-size="10" font-weight="500" fill="{t["muted"]}">{html.escape(p["hero_unit"])}</tspan></text>'
-                    f'<text x="{px + card_w - 12:.1f}" y="{card_y + 37.5}" text-anchor="end" font-family="{MONO}" font-size="9.2" fill="{t["subtext"]}">{html.escape(p.get("right_meta") or "")}</text>'
-                    f'<text x="{px + 12:.1f}" y="{card_y + 51}" font-family="{MONO}" font-size="9" fill="{t["muted"]}">{html.escape(p["sub_text"])}</text>'
-                )
+        for idx, p in enumerate(bottom_platforms):
+            px = 26.0 + idx * (card_w + p_gap)
+            key = p.get("key") or ""
+            icon_col = t["text"] if key == "lichess" else p.get("dot_color", t["accent"])
+            hero_col = t["text"]
+            icon_d = PLAT_ICON_PATHS.get(key, "")
+            icon_el = (
+                f'<g transform="translate({px + 13:.1f}, {card_y + 10.0:.1f}) scale(0.52)"><path fill-rule="evenodd" clip-rule="evenodd" d="{icon_d}" fill="{icon_col}"/></g>'
+                if icon_d
+                else f'<circle cx="{px + 16:.1f}" cy="{card_y + 16.0}" r="3.2" fill="{icon_col}"/>'
+            )
+            plat_cards.append(
+                f'<rect x="{px:.1f}" y="{card_y}" width="{card_w:.1f}" height="{plat_card_h}" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>'
+                + icon_el
+                + f'<text x="{px + 30:.1f}" y="{card_y + 19.5}" font-family="{SANS}" font-size="11.2" font-weight="600" fill="{t["text"]}">{html.escape(p["name"])}</text>'
+                f'<text x="{px + card_w - 13:.1f}" y="{card_y + 19.5}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">{html.escape(p["handle"])}</text>'
+                f'<text x="{px + 13:.1f}" y="{card_y + 40.5}" font-family="{MONO}" font-size="15.5" font-weight="700" fill="{hero_col}">{html.escape(p["hero_val"])} <tspan font-family="{SANS}" font-size="10.2" font-weight="500" fill="{t["muted"]}">{html.escape(p["hero_unit"])}</tspan></text>'
+                f'<text x="{px + card_w - 13:.1f}" y="{card_y + 40.5}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["subtext"]}">{html.escape(p.get("right_meta") or "")}</text>'
+                f'<text x="{px + 13:.1f}" y="{card_y + 56}" font-family="{SANS}" font-size="9.6" fill="{t["muted"]}">{html.escape(p["sub_text"])}</text>'
+            )
         platforms_svg = f"""
-  <!-- Band 7: External Platforms (Hugging Face, Kaggle, LeetCode | Chess.com, Lichess) -->
+  <!-- Band 7: External Platforms (Lichess, Chess.com, Brainly) -->
   <line x1="26" y1="{plat_y0}" x2="819" y2="{plat_y0}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="26" y="{plat_y0 + 22}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Platforms</text>
-  <text x="819" y="{plat_y0 + 22}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["faint"]}">Live public telemetry</text>
+  <text x="26" y="{plat_y0 + 21}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Platforms</text>
   {"".join(plat_cards)}
 """
 
@@ -1235,17 +1262,17 @@ def render_unified_readme_svg(
     </linearGradient>
 {flowing_grad_def(f"dashLine_{theme_name}", theme_name, 44, 818, "7s")}
 {flowing_grad_def(f"dashContribFlow_{theme_name}", theme_name, 375, 495, "7s")}
-{flowing_grad_def(f"dashWakaFlow_{theme_name}", theme_name, 26, 110, "7s")}
+{flowing_grad_def(f"dashPaceFlow_{theme_name}", theme_name, 720, 815, "7s")}
   </defs>
 
   <!-- ONE Unified Homogeneous Outer Frame -->
   <rect x="0.5" y="0.5" width="844" height="{height - 1}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}"/>
 
-  <!-- Band 1: Tech Stack (34 full-bleed brand icons, 17x2) -->
+  <!-- Band 1: Tech Stack (32 full-bleed brand icons, 16x2) -->
   {tech_stack_svg}
 
   <!-- Band 2: Pac-Man Contribution Graph (Log Scale) -->
-  <line x1="26" y1="121" x2="819" y2="121" stroke="{t["border_soft"]}" stroke-width="1"/>
+  <line x1="26" y1="125" x2="819" y2="125" stroke="{t["border_soft"]}" stroke-width="1"/>
   {pacman_svg}
 
   <!-- Band 3: Overview & Activity -->
@@ -1348,15 +1375,15 @@ def render_plain_profile_md(
         "## Links & Socials",
         "- **GitHub:** https://github.com/Lealwbs",
         "- **LinkedIn:** https://www.linkedin.com/in/lealwbs",
-        "- **Email:** mailto:italoleallanasantos@gmail.com",
-        "- **Lattes CNPq:** http://lattes.cnpq.br/4756437356720090",
-        "- **Instagram:** https://www.instagram.com/Lealwbs",
-        "- **Discord:** `Leal#8905` (https://discord.com/users/Leal#8905)",
-        "- **LeetCode:** https://leetcode.com/u/italoleallanasantos",
         "- **Hugging Face:** https://huggingface.co/Lealwbs",
         "- **Kaggle:** https://www.kaggle.com/lealwbs",
-        "- **Chess.com:** https://www.chess.com/member/lealz",
+        "- **LeetCode:** https://leetcode.com/u/italoleallanasantos",
+        "- **Lattes CNPq:** http://lattes.cnpq.br/4756437356720090",
+        "- **Email:** mailto:italoleallanasantos@gmail.com",
+        "- **Discord:** `Leal#8905` (https://discord.com/users/Leal#8905)",
+        "- **Instagram:** https://www.instagram.com/Lealwbs",
         "- **Lichess:** https://lichess.org/@/Lealz",
+        "- **Chess.com:** https://www.chess.com/member/lealz",
         "",
         "## Overview",
         "- **Academic Average (NSG):** 85.1 / 100",
@@ -1366,10 +1393,10 @@ def render_plain_profile_md(
         "- **Member:** Stanford LC Talent Network",
         "- **President:** Liga ISMART UFMG",
         "",
-        "## Tech Stack (34 Tools)",
-        "- **AI, ML & Data:** Python, PyTorch, scikit-learn, Hugging Face, Google Gemini, Jupyter, Pandas, NumPy, Apache Spark, FastAPI, Streamlit",
-        "- **Databases, Cloud & Enterprise:** SQL, PostgreSQL, Supabase, Docker, Amazon Web Services (AWS), Azure, SAP (ABAP / S/4HANA)",
-        "- **Systems, Web & Dev Workflow:** C, C++, Java, TypeScript, JavaScript, Next.js, React, Tailwind CSS, Node.js, Vercel, Linux, Git, GitHub, Google Antigravity, Codex, Visual Studio Code",
+        "## Tech Stack (32 Tools)",
+        "- **AI, ML & Data:** Python, NumPy, scikit-learn, Pandas, Gradio, Apache Spark, PyTorch, FastAPI",
+        "- **Databases & Cloud:** MySQL, PostgreSQL, DuckDB, Redis, Supabase, Amazon Web Services (AWS), Azure, Docker",
+        "- **Systems, Web/Mobile & Enterprise:** C, C++, Java, JavaScript, TypeScript, Tailwind CSS, React, Next.js, Expo, Vercel, Node.js, Render, Git, RISC-V, ABAP, SAP",
         "",
         "## GitHub Activity",
         f"- **All-Time Contributions:** {gh['all_time_contributions']:,}",
@@ -1411,7 +1438,7 @@ def render_plain_profile_md(
             lines.append("- **Editors & AI Tools:** " + ", ".join(f"{e['name']} ({fmt_dur(float(e.get('total_seconds') or 0))}, {float(e.get('percent') or 0):.1f}%)" for e in waka["editors"]))
 
     if platforms:
-        lines.extend(["", "## External Platforms (Live)"])
+        lines.extend(["", "## External Platforms"])
         for p in platforms:
             meta = f" | {p['right_meta']}" if p.get("right_meta") else ""
             lines.append(f"- **{p['name']} (`{p['handle']}`):** {p['hero_val']} {p['hero_unit']}{meta} ({p['sub_text']})")
@@ -1432,14 +1459,14 @@ def render_llms_txt(
         "> Information Systems Undergraduate (7th Semester, UFMG, NSG 85.1/100), SAP ABAP Consultant at Seidor Brasil, President of Liga ISMART UFMG, Founder of Coletivo Voa Voa ENEM Prep, Harvard Aspire Leaders '25 Alumni, and Stanford LC Talent Network Member.",
         "",
         "## Primary Text Dossier",
-        "- [PROFILE.md](https://github.com/Lealwbs/Lealwbs/blob/main/PROFILE.md): Full machine-readable markdown telemetry (Overview, 34-tool Tech Stack, GitHub stats, Commit schedule, Recent repos, WakaTime, LeetCode & Chess ratings).",
+        "- [PROFILE.md](https://github.com/Lealwbs/Lealwbs/blob/main/PROFILE.md): Full machine-readable markdown telemetry (Overview, 32-tool Tech Stack, GitHub stats, Commit schedule, Recent repos, WakaTime, ML/Coding platforms, Chess & Brainly).",
         "- [README.md](https://github.com/Lealwbs/Lealwbs/blob/main/README.md): Visual SVG GitHub profile dashboard.",
         "",
         "## Live Snapshot",
         f"- Synced: {gh['synced_date']}",
         f"- GitHub: {gh['all_time_contributions']:,} all-time contributions, {gh['commits_1y']:,} commits (1y), {gh['current_streak']}d streak (best {gh['longest_streak']}d), {gh['public_repos']} public repos",
         f"- Platforms: {plat_summary}" if plat_summary else "- Platforms: GitHub",
-        "- Handles: GitHub @Lealwbs | LeetCode @italoleallanasantos | Hugging Face @Lealwbs | Kaggle @lealwbs | Chess.com @lealz | Lichess @Lealz",
+        "- Handles: GitHub @Lealwbs | Hugging Face @Lealwbs | LeetCode @italoleallanasantos | Kaggle @lealwbs | Lichess @Lealz | Chess.com @lealz | Brainly @Leallana",
         "",
     ])
 
