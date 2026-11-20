@@ -33,19 +33,19 @@
 - **Systems, Web/Mobile & Enterprise:** C, C++, Java, JavaScript, TypeScript, Tailwind CSS, React, Next.js, Expo, Vercel, Node.js, Render, Git, RISC-V, ABAP, SAP
 
 ## GitHub Activity
-- **All-Time Contributions:** 1,343
-- **Commits (1y):** 844
+- **All-Time Contributions:** 1,346
+- **Commits (1y):** 845
 - **Current Streak / Longest Streak:** 5d / 11d
 - **Public Repositories:** 24
-- **Pull Requests / Issues:** 7 / 23
-- **30d Daily Average:** 8.2
-- **Stars / Followers:** 8 / 24
-- **Last 30 Days:** 246 total, 28 peak (09/11), 24/30 active days
+- **Pull Requests / Issues:** 7 / 25
+- **30d Daily Average:** 8.3
+- **Stars / Followers:** 8 / 25
+- **Last 30 Days:** 249 total, 28 peak (09/11), 24/30 active days
 - **Top Repository Languages:** Python (79%), C (7%), Jupyter Notebook (4%), HTML (3%)
 
 ## Commit Schedule (BRT / UTC-3)
 - **Time Buckets:** Morning (06h–12h): 49 (8.6%) | Daytime (12h–18h): 192 (33.6%) | Evening (18h–24h): 265 (46.3%) | Night (00h–06h): 66 (11.5%)
-- **Weekday Distribution:** Mon: 163 | Tue: 173 | Wed: 92 | Thu: 193 | Fri: 166 | Sat: 74 | Sun: 23
+- **Weekday Distribution:** Mon: 163 | Tue: 173 | Wed: 92 | Thu: 193 | Fri: 169 | Sat: 74 | Sun: 23
 
 ## Recently Committed Repositories
 - **kinorank** (Jupyter Notebook | ★2, 20/11): Recomendacao hibrida com ALS, FAISS, LightGBM e LLM
@@ -60,7 +60,7 @@
 ## External Platforms
 - **Hugging Face (`@Lealwbs`):** 3 artifacts | 0 likes (1 models · 1 datasets · 1 spaces)
 - **Kaggle (`@lealwbs`):** 1 published (0 notebooks · 1 datasets)
-- **LeetCode (`@italoleallanasantos`):** 103 solved | 52d active (91E · 10M · 2H)
+- **LeetCode (`@italoleallanasantos`):** 103 solved | 53d active (91E · 10M · 2H)
 - **Chess.com (`@lealz`):** 1,612 Rapid | Tactics 2,078 (Bullet 1337 · Blitz 1190 · 995g)
 - **Lichess (`@Lealz`):** 1,920 Bullet | 2,426 games (Rapid 1775 · Blitz 1603)
 - **Brainly (`@Leallana`):** 1,007 answers | 65,036 pts (194 best · 8.1k thanks · 866 Math)
