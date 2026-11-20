@@ -204,6 +204,7 @@ query($login: String!) {{
         isPrivate
         description
         stargazerCount
+        forkCount
         pushedAt
         primaryLanguage {{ name color }}
         defaultBranchRef {{
@@ -233,6 +234,7 @@ query($login: String!) {{
         name
         description
         stargazerCount
+        forkCount
         pushedAt
         primaryLanguage {{ name color }}
         languages(first: 10, orderBy: {{field: SIZE, direction: DESC}}) {{
@@ -387,7 +389,8 @@ def fetch_github_metrics(login: str, token: str) -> dict[str, Any]:
                         "description": desc_txt,
                         "language": lang_lbl,
                         "color": pl.get("color") or "#9aa0a6",
-                        "stars": r["stargazerCount"],
+                        "stars": int(r.get("stargazerCount") or 0),
+                        "forks": int(r.get("forkCount") or 0),
                         "commit_date": commit_ts.astimezone(BRT).strftime("%d/%m"),
                     },
                 )
@@ -420,7 +423,8 @@ def fetch_github_metrics(login: str, token: str) -> dict[str, Any]:
                     "description": desc_txt,
                     "language": lang_lbl,
                     "color": pl.get("color") or "#9aa0a6",
-                    "stars": r["stargazerCount"],
+                    "stars": int(r.get("stargazerCount") or 0),
+                    "forks": int(r.get("forkCount") or 0),
                     "commit_date": latest_user_commit.astimezone(BRT).strftime("%d/%m"),
                 },
             )
@@ -573,7 +577,57 @@ def _http_json(url: str, data: bytes | None = None, headers: dict[str, str] | No
 def fetch_platform_metrics() -> list[dict[str, Any]]:
     platforms: list[dict[str, Any]] = []
 
-    # 1. LeetCode (italoleallanasantos)
+    # 1. Hugging Face (Lealwbs)
+    try:
+        hf = _http_json("https://huggingface.co/api/users/Lealwbs/overview")
+        models = int(hf.get("numModels") or 0)
+        datasets = int(hf.get("numDatasets") or 0)
+        spaces = int(hf.get("numSpaces") or 0)
+        total_hf = models + datasets + spaces
+        if total_hf > 0:
+            platforms.append({
+                "key": "huggingface",
+                "name": "Hugging Face",
+                "handle": "@Lealwbs",
+                "hero_val": str(total_hf),
+                "hero_unit": "artifacts",
+                "right_meta": f"{int(hf.get('numLikes') or 0)} likes",
+                "sub_text": f"{models} models · {datasets} datasets · {spaces} spaces",
+                "dot_color": "#FFD21E",
+            })
+    except Exception:
+        pass
+
+    # 2. Kaggle (lealwbs)
+    try:
+        ds_list = _http_json("https://www.kaggle.com/api/v1/datasets/list?user=lealwbs")
+        ds_cnt = len(ds_list) if isinstance(ds_list, list) else 0
+        nb_cnt = 0
+        k_user = os.environ.get("KAGGLE_USERNAME", "").strip()
+        k_key = os.environ.get("KAGGLE_KEY", "").strip()
+        if k_user and k_key:
+            import base64
+            tok = base64.b64encode(f"{k_user}:{k_key}".encode("utf-8")).decode("ascii")
+            k_list = _http_json(
+                f"https://www.kaggle.com/api/v1/kernels/list?user={k_user}",
+                headers={"Authorization": f"Basic {tok}"},
+            )
+            nb_cnt = len(k_list) if isinstance(k_list, list) else 0
+        if ds_cnt + nb_cnt > 0:
+            platforms.append({
+                "key": "kaggle",
+                "name": "Kaggle",
+                "handle": "@lealwbs",
+                "hero_val": str(ds_cnt + nb_cnt),
+                "hero_unit": "published",
+                "right_meta": "",
+                "sub_text": f"{nb_cnt} notebooks · {ds_cnt} datasets",
+                "dot_color": "#20BEFF",
+            })
+    except Exception:
+        pass
+
+    # 3. LeetCode (italoleallanasantos)
     try:
         payload = json.dumps({
             "query": (
@@ -607,7 +661,7 @@ def fetch_platform_metrics() -> list[dict[str, Any]]:
     except Exception:
         pass
 
-    # 2. Chess.com (lealz)
+    # 4. Chess.com (lealz)
     try:
         cs = _http_json("https://api.chess.com/pub/player/lealz/stats")
         rapid = int(((cs.get("chess_rapid") or {}).get("last") or {}).get("rating") or 0)
@@ -633,7 +687,7 @@ def fetch_platform_metrics() -> list[dict[str, Any]]:
     except Exception:
         pass
 
-    # 3. Lichess (Lealz)
+    # 5. Lichess (Lealz)
     try:
         li = _http_json("https://lichess.org/api/user/Lealz")
         perfs = li.get("perfs") or {}
@@ -651,56 +705,6 @@ def fetch_platform_metrics() -> list[dict[str, Any]]:
                 "right_meta": f"{fmt_num(total_g)} games" if total_g else "",
                 "sub_text": f"Rapid {rapid} · Blitz {blitz}",
                 "dot_color": "#e3e3e3",
-            })
-    except Exception:
-        pass
-
-    # 4. Hugging Face (Lealwbs) — auto-appears once >= 1 model/dataset/space is published
-    try:
-        hf = _http_json("https://huggingface.co/api/users/Lealwbs/overview")
-        models = int(hf.get("numModels") or 0)
-        datasets = int(hf.get("numDatasets") or 0)
-        spaces = int(hf.get("numSpaces") or 0)
-        total_hf = models + datasets + spaces
-        if total_hf > 0:
-            platforms.append({
-                "key": "huggingface",
-                "name": "Hugging Face",
-                "handle": "@Lealwbs",
-                "hero_val": str(total_hf),
-                "hero_unit": "artifacts",
-                "right_meta": f"{int(hf.get('numLikes') or 0)} likes",
-                "sub_text": f"{models} models · {datasets} datasets · {spaces} spaces",
-                "dot_color": "#FFD21E",
-            })
-    except Exception:
-        pass
-
-    # 5. Kaggle (lealwbs) — auto-appears once >= 1 public dataset or notebook (via Secrets) is published
-    try:
-        ds_list = _http_json("https://www.kaggle.com/api/v1/datasets/list?user=lealwbs")
-        ds_cnt = len(ds_list) if isinstance(ds_list, list) else 0
-        nb_cnt = 0
-        k_user = os.environ.get("KAGGLE_USERNAME", "").strip()
-        k_key = os.environ.get("KAGGLE_KEY", "").strip()
-        if k_user and k_key:
-            import base64
-            tok = base64.b64encode(f"{k_user}:{k_key}".encode("utf-8")).decode("ascii")
-            k_list = _http_json(
-                f"https://www.kaggle.com/api/v1/kernels/list?user={k_user}",
-                headers={"Authorization": f"Basic {tok}"},
-            )
-            nb_cnt = len(k_list) if isinstance(k_list, list) else 0
-        if ds_cnt + nb_cnt > 0:
-            platforms.append({
-                "key": "kaggle",
-                "name": "Kaggle",
-                "handle": "@lealwbs",
-                "hero_val": str(ds_cnt + nb_cnt),
-                "hero_unit": "published",
-                "right_meta": "",
-                "sub_text": f"{nb_cnt} notebooks · {ds_cnt} datasets",
-                "dot_color": "#20BEFF",
             })
     except Exception:
         pass
@@ -882,7 +886,23 @@ def render_unified_readme_svg(
     # Band 3..6 reuse clean relative layout with off = 265!
     off = 265
     base_bottom = 753 + off if has_waka else 530 + off
-    height = (base_bottom + 104) if has_platforms else (base_bottom + 18)
+    plat_card_h = 58
+    plat_row_gap = 12
+    if has_platforms:
+        n_plat = len(active_platforms)
+        if n_plat <= 3:
+            plat_rows_counts = [n_plat]
+        elif n_plat == 4:
+            plat_rows_counts = [2, 2]
+        elif n_plat == 5:
+            plat_rows_counts = [3, 2]
+        else:
+            plat_rows_counts = [3] * (n_plat // 3) + ([n_plat % 3] if n_plat % 3 else [])
+        n_plat_rows = len(plat_rows_counts)
+        height = base_bottom + 32 + n_plat_rows * plat_card_h + max(n_plat_rows - 1, 0) * plat_row_gap + 26
+    else:
+        plat_rows_counts = []
+        height = base_bottom + 26
 
     tech_stack_svg = load_tech_stack_inner(theme_name, y_pos=18)
     pacman_svg = load_pacman_inner(theme_name, y_pos=131, weeks_1y=gh.get("weeks_1y"))
@@ -1022,14 +1042,30 @@ def render_unified_readme_svg(
         )
 
     repo_cards = []
+    fork_icon_path = "M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"
     for i, r in enumerate(gh["recent_repos"]):
         cy = 390 + off + i * 42
-        star_txt = f' · ★{r["stars"]}' if r["stars"] > 0 else ""
+        name_disp = truncate(r["name"], 24)
+        meta_x = 475.0 + len(name_disp) * 6.65 + 8.0
+        meta_parts = []
+        if r["stars"] > 0:
+            s_txt = f'★{r["stars"]}'
+            meta_parts.append(
+                f'<text x="{meta_x:.1f}" y="{cy + 14.5}" font-family="{MONO}" font-size="9.5" font-weight="500" fill="{t["muted"]}">{s_txt}</text>'
+            )
+            meta_x += len(s_txt) * 5.8 + 7.0
+        if r.get("forks", 0) > 0:
+            f_txt = str(r["forks"])
+            meta_parts.append(
+                f'<g transform="translate({meta_x:.1f}, {cy + 6.2:.1f}) scale(0.62)"><path d="{fork_icon_path}" fill="{t["muted"]}"/></g>'
+                f'<text x="{meta_x + 11.0:.1f}" y="{cy + 14.5}" font-family="{MONO}" font-size="9.5" font-weight="500" fill="{t["muted"]}">{f_txt}</text>'
+            )
         repo_cards.append(
             f'<rect x="450" y="{cy}" width="369" height="35" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>'
             f'<circle cx="464" cy="{cy + 17.5}" r="3.5" fill="{r["color"]}"/>'
-            f'<text x="475" y="{cy + 14.5}" font-family="{MONO}" font-size="11" font-weight="600" fill="{t["text"]}">{html.escape(truncate(r["name"], 26))}</text>'
-            f'<text x="807" y="{cy + 14.5}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["muted"]}">{html.escape(r["language"] + star_txt)}</text>'
+            f'<text x="475" y="{cy + 14.5}" font-family="{MONO}" font-size="11" font-weight="600" fill="{t["text"]}">{html.escape(name_disp)}</text>'
+            + "".join(meta_parts)
+            + f'<text x="807" y="{cy + 14.5}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["muted"]}">{html.escape(r["language"])}</text>'
             f'<text x="475" y="{cy + 27.5}" font-family="{SANS}" font-size="10" fill="{t["muted"]}">{html.escape(truncate(r["description"], 44))}</text>'
             f'<text x="807" y="{cy + 27.5}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">{html.escape(r.get("commit_date") or "")}</text>'
         )
@@ -1155,34 +1191,36 @@ def render_unified_readme_svg(
             ),
         }
         plat_y0 = base_bottom
-        n_plat = len(active_platforms)
         p_gap = 12.0
-        card_w = (793.0 - (n_plat - 1) * p_gap) / n_plat
-        card_y = plat_y0 + 32
-        card_h = 58
         plat_cards = []
-        for idx, p in enumerate(active_platforms):
-            px = 26.0 + idx * (card_w + p_gap)
-            key = p.get("key") or ""
-            icon_col = t["text"] if key == "lichess" else p.get("dot_color", t["accent"])
-            hero_col = t["accent"] if key == "leetcode" else t["text"]
-            icon_d = plat_icon_paths.get(key, "")
-            icon_el = (
-                f'<g transform="translate({px + 10:.1f}, {card_y + 8.5:.1f}) scale(0.50)"><path d="{icon_d}" fill="{icon_col}"/></g>'
-                if icon_d
-                else f'<circle cx="{px + 13:.1f}" cy="{card_y + 14.5}" r="3.2" fill="{icon_col}"/>'
-            )
-            plat_cards.append(
-                f'<rect x="{px:.1f}" y="{card_y}" width="{card_w:.1f}" height="{card_h}" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>'
-                + icon_el
-                + f'<text x="{px + 26:.1f}" y="{card_y + 18}" font-family="{SANS}" font-size="11" font-weight="600" fill="{t["text"]}">{html.escape(p["name"])}</text>'
-                f'<text x="{px + card_w - 11:.1f}" y="{card_y + 18}" text-anchor="end" font-family="{MONO}" font-size="8.8" fill="{t["faint"]}">{html.escape(p["handle"])}</text>'
-                f'<text x="{px + 11:.1f}" y="{card_y + 37}" font-family="{MONO}" font-size="14.5" font-weight="700" fill="{hero_col}">{html.escape(p["hero_val"])} <tspan font-family="{SANS}" font-size="10" font-weight="500" fill="{t["muted"]}">{html.escape(p["hero_unit"])}</tspan></text>'
-                f'<text x="{px + card_w - 11:.1f}" y="{card_y + 37}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["subtext"]}">{html.escape(p.get("right_meta") or "")}</text>'
-                f'<text x="{px + 11:.1f}" y="{card_y + 50.5}" font-family="{MONO}" font-size="8.8" fill="{t["muted"]}">{html.escape(p["sub_text"])}</text>'
-            )
+        plat_idx = 0
+        for row_idx, row_n in enumerate(plat_rows_counts):
+            card_y = plat_y0 + 32 + row_idx * (plat_card_h + plat_row_gap)
+            card_w = (793.0 - (row_n - 1) * p_gap) / row_n
+            for col_idx in range(row_n):
+                p = active_platforms[plat_idx]
+                plat_idx += 1
+                px = 26.0 + col_idx * (card_w + p_gap)
+                key = p.get("key") or ""
+                icon_col = t["text"] if key == "lichess" else p.get("dot_color", t["accent"])
+                hero_col = t["accent"] if key == "leetcode" else t["text"]
+                icon_d = plat_icon_paths.get(key, "")
+                icon_el = (
+                    f'<g transform="translate({px + 12:.1f}, {card_y + 9.0:.1f}) scale(0.52)"><path d="{icon_d}" fill="{icon_col}"/></g>'
+                    if icon_d
+                    else f'<circle cx="{px + 15:.1f}" cy="{card_y + 15.0}" r="3.2" fill="{icon_col}"/>'
+                )
+                plat_cards.append(
+                    f'<rect x="{px:.1f}" y="{card_y}" width="{card_w:.1f}" height="{plat_card_h}" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>'
+                    + icon_el
+                    + f'<text x="{px + 29:.1f}" y="{card_y + 18.5}" font-family="{SANS}" font-size="11.2" font-weight="600" fill="{t["text"]}">{html.escape(p["name"])}</text>'
+                    f'<text x="{px + card_w - 12:.1f}" y="{card_y + 18.5}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">{html.escape(p["handle"])}</text>'
+                    f'<text x="{px + 12:.1f}" y="{card_y + 37.5}" font-family="{MONO}" font-size="14.5" font-weight="700" fill="{hero_col}">{html.escape(p["hero_val"])} <tspan font-family="{SANS}" font-size="10" font-weight="500" fill="{t["muted"]}">{html.escape(p["hero_unit"])}</tspan></text>'
+                    f'<text x="{px + card_w - 12:.1f}" y="{card_y + 37.5}" text-anchor="end" font-family="{MONO}" font-size="9.2" fill="{t["subtext"]}">{html.escape(p.get("right_meta") or "")}</text>'
+                    f'<text x="{px + 12:.1f}" y="{card_y + 51}" font-family="{MONO}" font-size="9" fill="{t["muted"]}">{html.escape(p["sub_text"])}</text>'
+                )
         platforms_svg = f"""
-  <!-- Band 7: External Platforms (LeetCode, Chess.com, Lichess, + auto HF/Kaggle) -->
+  <!-- Band 7: External Platforms (Hugging Face, Kaggle, LeetCode | Chess.com, Lichess) -->
   <line x1="26" y1="{plat_y0}" x2="819" y2="{plat_y0}" stroke="{t["border_soft"]}" stroke-width="1"/>
   <text x="26" y="{plat_y0 + 22}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Platforms</text>
   <text x="819" y="{plat_y0 + 22}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["faint"]}">Live public telemetry</text>
@@ -1329,8 +1367,9 @@ def render_plain_profile_md(
         "- **President:** Liga ISMART UFMG",
         "",
         "## Tech Stack (34 Tools)",
-        "- **Languages, Web & Data:** SAP (ABAP / S/4HANA), Python, C, C++, Java, TypeScript, JavaScript, Next.js, React, HTML, CSS, Tailwind CSS, Node.js, SQL, MySQL, PostgreSQL, Supabase",
-        "- **ML/BI, Cloud, AI Agents & Dev Tools:** Pandas, NumPy, Streamlit, Power BI, Amazon Web Services (AWS), Azure, Vercel, Google Antigravity, Google Gemini, Gemini CLI, Codex, Visual Studio Code, Eclipse, Git, GitHub, Linux, LaTeX",
+        "- **AI, ML & Data:** Python, PyTorch, scikit-learn, Hugging Face, Google Gemini, Jupyter, Pandas, NumPy, Apache Spark, FastAPI, Streamlit",
+        "- **Databases, Cloud & Enterprise:** SQL, PostgreSQL, Supabase, Docker, Amazon Web Services (AWS), Azure, SAP (ABAP / S/4HANA)",
+        "- **Systems, Web & Dev Workflow:** C, C++, Java, TypeScript, JavaScript, Next.js, React, Tailwind CSS, Node.js, Vercel, Linux, Git, GitHub, Google Antigravity, Codex, Visual Studio Code",
         "",
         "## GitHub Activity",
         f"- **All-Time Contributions:** {gh['all_time_contributions']:,}",
@@ -1354,7 +1393,8 @@ def render_plain_profile_md(
     ]
     for r in gh["recent_repos"]:
         star_s = f" | ★{r['stars']}" if r["stars"] > 0 else ""
-        lines.append(f"- **{r['name']}** ({r['language']}{star_s}, {r['commit_date']}): {r['description']}")
+        fork_s = f" | {r['forks']} forks" if r.get("forks", 0) > 0 else ""
+        lines.append(f"- **{r['name']}** ({r['language']}{star_s}{fork_s}, {r['commit_date']}): {r['description']}")
 
     if waka and waka.get("languages"):
         coding_langs, _ = filter_coding_languages(waka["languages"])
