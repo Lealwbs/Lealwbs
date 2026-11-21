@@ -60,7 +60,7 @@
 ## External Platforms
 - **Hugging Face (`@Lealwbs`):** 3 artifacts | 0 likes (1 models · 1 datasets · 1 spaces)
 - **Kaggle (`@lealwbs`):** 1 published (0 notebooks · 1 datasets)
-- **LeetCode (`@italoleallanasantos`):** 110 solved | 53d active (94E · 14M · 2H)
+- **LeetCode (`@italoleallanasantos`):** 112 solved | 54d active (94E · 15M · 3H)
 - **Chess.com (`@lealz`):** 1,612 Rapid | Tactics 2,078 (Bullet 1337 · Blitz 1190 · 995g)
 - **Lichess (`@Lealz`):** 1,920 Bullet | 2,426 games (Rapid 1775 · Blitz 1603)
 - **Brainly (`@Leallana`):** 1,007 answers | 65,036 pts (194 best · 8.1k thanks · 866 Math)
