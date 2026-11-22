@@ -53,9 +53,9 @@
 - **engsoft** (Java, 16/11): Engenharia de Software - UFMG
 
 ## WakaTime Telemetry
-- **Pace:** All time: 260h 3m | Daily avg: 1h 52m | Best day: 10h 11m (20/11)
-- **Coding Languages:** Python (28h 20m, 25.7%), C (27h 6m, 24.6%), ABAP (17h 55m, 16.2%), JavaScript (17h 2m, 15.4%), TypeScript (8h 29m, 7.7%), Standard ML (3h 18m, 3.0%), Java (3h 6m, 2.8%)
-- **Editors & AI Tools:** Antigravity IDE (134h 44m, 51.8%), VS Code (62h 12m, 23.9%), Antigravity Desktop (34h 12m, 13.2%), Copilot CLI (10h 26m, 4.0%), Codex Vscode (9h 6m, 3.5%), Chrome (6h 6m, 2.3%), Eclipse (1h 37m, 0.6%)
+- **Pace:** All time: 266h 24m | Daily avg: 1h 54m | Best day: 10h 11m (20/11)
+- **Coding Languages:** Python (28h 59m, 26.1%), C (27h 6m, 24.4%), ABAP (17h 55m, 16.1%), JavaScript (17h 2m, 15.3%), TypeScript (8h 29m, 7.6%), Standard ML (3h 18m, 3.0%), Java (3h 6m, 2.8%)
+- **Editors & AI Tools:** Antigravity IDE (134h 44m, 50.6%), VS Code (62h 50m, 23.6%), Antigravity Desktop (34h 12m, 12.8%), Chrome (10h 58m, 4.1%), Copilot CLI (10h 26m, 3.9%), Codex Vscode (9h 6m, 3.4%), Antigravity (1h 42m, 0.6%)
 
 ## External Platforms
 - **Hugging Face (`@Lealwbs`):** 3 artifacts | 0 likes (1 models · 1 datasets · 1 spaces)
