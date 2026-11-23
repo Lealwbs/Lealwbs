@@ -118,6 +118,17 @@ EXCLUDED_WAKA_LANGS = {
     "standard ml",
 }
 
+EXCLUDED_WAKA_EDITORS = {
+    "chrome",
+    "google chrome",
+    "firefox",
+    "microsoft edge",
+    "edge",
+    "safari",
+    "brave",
+    "opera",
+}
+
 LANG_COLORS: dict[str, str] = {
     "Python": "#3572A5",
     "Java": "#b07219",
