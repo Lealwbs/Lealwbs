@@ -115,6 +115,7 @@ EXCLUDED_WAKA_LANGS = {
     "powershell",
     "tex",
     "latex",
+    "standard ml",
 }
 
 LANG_COLORS: dict[str, str] = {
@@ -180,8 +181,22 @@ def graphql_request(query: str, variables: dict[str, Any], token: str) -> dict[s
         },
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        body = json.loads(resp.read().decode("utf-8"))
+    import time
+    last_err: Exception | None = None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                body = json.loads(resp.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as e:
+            last_err = e
+            if e.code in (502, 503, 504) and attempt < 2:
+                time.sleep(2 * (attempt + 1))
+                continue
+            raise
+    else:
+        assert last_err is not None
+        raise last_err
     if "errors" in body:
         raise RuntimeError(f"GitHub GraphQL error: {body['errors']}")
     return body["data"]
@@ -561,12 +576,28 @@ def fetch_wakatime_metrics(api_key: str) -> dict[str, Any] | None:
         },
         "categories": sorted((selected.get("categories") or []), key=lambda x: -(x.get("total_seconds") or 0)),
         "languages": sorted((selected.get("languages") or []), key=lambda x: -(x.get("total_seconds") or 0)),
-        "editors": sorted(
-            [e for e in (selected.get("editors") or []) if (e.get("total_seconds") or 0) > 0],
-            key=lambda x: -(x.get("total_seconds") or 0),
-        )[:7],
+        "editors": _filter_waka_editors(selected.get("editors") or []),
         "operating_systems": sorted((selected.get("operating_systems") or []), key=lambda x: -(x.get("total_seconds") or 0))[:2],
     }
+
+
+def _filter_waka_editors(editors: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    filtered = sorted(
+        [
+            e for e in editors
+            if (e.get("total_seconds") or 0) > 0
+            and e.get("name", "").strip().lower() not in EXCLUDED_WAKA_EDITORS
+        ],
+        key=lambda x: -(x.get("total_seconds") or 0),
+    )[:7]
+    total_sec = sum(float(e.get("total_seconds") or 0) for e in filtered) or 1.0
+    out = []
+    for e in filtered:
+        sec = float(e.get("total_seconds") or 0)
+        item = dict(e)
+        item["percent"] = (sec / total_sec) * 100.0
+        out.append(item)
+    return out
 
 
 def filter_coding_languages(langs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], float]:
@@ -795,6 +826,26 @@ PLAT_ICON_PATHS = {
 }
 
 
+CURATED_TECH_STACK = [
+    "C",
+    "C++",
+    "Python",
+    "NumPy",
+    "scikit-learn",
+    "Pandas",
+    "Apache Spark",
+    "PyTorch",
+    "FastAPI",
+    "MySQL",
+    "PostgreSQL",
+    "DuckDB",
+    "Redis",
+    "Amazon Web Services",
+    "Azure",
+    "Docker",
+]
+
+
 def load_tech_stack_inner(theme_name: str, y_pos: int) -> str:
     p = ASSETS_DIR / f"tech-stack-{theme_name}.svg"
     raw = p.read_text(encoding="utf-8")
@@ -802,7 +853,28 @@ def load_tech_stack_inner(theme_name: str, y_pos: int) -> str:
     inner = re.sub(r"</svg>$", "", inner.strip())
     inner = re.sub(r'id="(i\d+_[^"]+)"', rf'id="ts_{theme_name}_\1"', inner)
     inner = re.sub(r'url\(#(i\d+_[^)]+)\)', rf'url(#ts_{theme_name}_\1)', inner)
-    return f'<svg x="21.5" y="{y_pos}" width="802" height="93" viewBox="0 0 802 93">{inner}</svg>'
+
+    # Extract each top-level icon <g transform="translate(X, 0|51) scale(...)">...</g> by its <title>
+    parts = re.split(r'(?=<g transform="translate\([^,]+,\s*(?:0|51)\)\s*scale\()', inner.strip())
+    by_title: dict[str, str] = {}
+    for part in parts:
+        m = re.search(r"<title>(.*?)</title>", part)
+        if m:
+            by_title[m.group(1).strip()] = part
+
+    selected = [by_title[name] for name in CURATED_TECH_STACK if name in by_title]
+    selected_groups = []
+    for idx, g in enumerate(selected):
+        x_pos = idx * 50.667
+        g = re.sub(
+            r'^<g transform="translate\([^)]+\)\s*scale\(([^)]+)\)"',
+            rf'<g transform="translate({x_pos:.3f}, 0) scale(\1)"',
+            g,
+            count=1,
+        )
+        selected_groups.append(g)
+
+    return f'<svg x="21.5" y="{y_pos}" width="802" height="42" viewBox="0 0 802 42">{"".join(selected_groups)}</svg>'
 
 
 def apply_log_scale_pacman_colors(inner: str, theme_name: str, weeks_1y: list[dict[str, Any]]) -> str:
@@ -909,7 +981,7 @@ def render_hero_svg(theme_name: str) -> str:
     t = THEMES[theme_name]
     dot_cycle = f"{t['accent_strong']};{t['accent_violet']};{t['accent_rose']};{t['accent_cyan']};{t['accent_strong']}"
     pill_lines = [
-        "Information Systems · UFMG",
+        "Information Systems · UFMG · 7th Sem.",
         "SAP ABAP Consultant · Seidor Brasil",
         "AI Agents, Automation & Systems Engineering",
     ]
@@ -937,12 +1009,12 @@ def render_hero_svg(theme_name: str) -> str:
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="845" height="{height}" viewBox="0 0 845 {height}" fill="none">
   <defs>
 {flowing_grad_def(f"heroNameFlow_{theme_name}", theme_name, 250, 595, "7s")}
-{flowing_grad_def(f"heroPillFlow_{theme_name}", theme_name, 265, 580, "7s")}
+{flowing_grad_def(f"heroPillFlow_{theme_name}", theme_name, 254, 590, "7s")}
   </defs>
 
   <text x="422.5" y="42" text-anchor="middle" font-family="{MONO}" font-size="45" font-weight="900" letter-spacing="-0.8" fill="url(#heroNameFlow_{theme_name})" stroke="url(#heroNameFlow_{theme_name})" stroke-width="2.0" paint-order="stroke">Ítalo Leal</text>
 
-  <rect x="270.5" y="56" width="304" height="25" rx="12.5" fill="{t["accent_soft"]}" stroke="url(#heroPillFlow_{theme_name})" stroke-width="1.2" stroke-opacity="0.72"/>
+  <rect x="254.5" y="56" width="336" height="25" rx="12.5" fill="{t["accent_soft"]}" stroke="url(#heroPillFlow_{theme_name})" stroke-width="1.2" stroke-opacity="0.72"/>
   {"".join(pill_texts)}
 </svg>
 '''
@@ -960,226 +1032,20 @@ def render_unified_readme_svg(
     if waka and waka.get("languages"):
         coding_langs, coding_total_sec = filter_coding_languages(waka["languages"])
     has_waka = bool(waka and coding_langs)
-    active_platforms = platforms or []
-    has_platforms = len(active_platforms) > 0
 
-    # Floating Hero (profile/hero-{dark,light}.svg) + 1 row of 8 Clickable Pills sit cleanly above this block.
-    # Band 1 (Tech Stack 16x2):             y = 18 .. 125 (svg at y=18, h=93)
-    # Band 2 (Pac-Man Contribution Graph):  y = 125 .. 269 (svg at y=135, h=126)
-    # Band 3..6 reuse clean relative layout with off = 269!
-    off = 269
-    base_bottom = 753 + off if has_waka else 530 + off
-    bottom_keys = ("lichess", "chesscom", "brainly")
-    bottom_by_key = {p.get("key"): p for p in active_platforms}
-    bottom_platforms = [bottom_by_key[k] for k in bottom_keys if k in bottom_by_key]
-    has_bottom_platforms = len(bottom_platforms) > 0
-    plat_card_h = 66
-    height = (base_bottom + 30 + plat_card_h + 26) if has_bottom_platforms else (base_bottom + 26)
+    # Band 1 (Tech Stack 16x1 full-width): y = 18 .. 60 (svg at y=18, h=42)
+    # Band 2 (Pac-Man Graph, linear):      y = 84 .. 210 (svg at y=84, h=126)
+    # Band 3 (Activity+Pace | WakaTime | Commit schedule): y = off .. off + 214 (off = 218)
+    off = 218
+    height = off + 214
 
     tech_stack_svg = load_tech_stack_inner(theme_name, y_pos=18)
-    pacman_svg = load_pacman_inner(theme_name, y_pos=135, weeks_1y=gh.get("weeks_1y"))
+    pacman_svg = load_pacman_inner(theme_name, y_pos=84, weeks_1y=None)
 
-    # --- Band 3: Overview (compact 26..334) & Activity (wider 366..819) ---
-    ov_items = [
-        ("Student", "Undergraduate 7th Semester", t["accent_strong"]),
-        ("Founder", "Coletivo Voa Voa ENEM Prep", t["accent_rose"]),
-        ("Alumni", "Aspire Leaders Program '25", t["accent_cyan"]),
-        ("Member", "Stanford LC Talent Network", t["accent"]),
-        ("President", "Liga ISMART UFMG", t["accent_violet"]),
-    ]
-    ov_svg = []
-    for i, (role_lbl, title_val, dot_col) in enumerate(ov_items):
-        ry = 63 + off + i * 28
-        ov_svg.append(
-            f'<rect x="26" y="{ry - 13.5}" width="308" height="23" rx="7.5" fill="{t["card"]}" stroke="{t["border_soft"]}"/>'
-            f'<circle cx="39" cy="{ry - 2}" r="3.0" fill="{dot_col}"/>'
-            f'<text x="49" y="{ry + 1.5}" font-family="{SANS}" font-size="10.2" font-weight="500" fill="{t["muted"]}">{html.escape(role_lbl)}</text>'
-            f'<text x="104" y="{ry + 1.5}" font-family="{SANS}" font-size="10.9" font-weight="600" fill="{t["text"]}">{html.escape(title_val)}</text>'
-        )
-
-    bar_x, bar_w, bar_y = 366, 453, 165 + off
-    bar_segs, lang_leg = [], []
-    cur_x = float(bar_x)
-    top_langs = gh["top_gh_langs"]
-    top_sum = sum(l["pct"] for l in top_langs) or 1.0
-    leg_widths = [14 + len(f"{l['name']} {l['pct']:.0f}%") * 5.85 for l in top_langs]
-    leg_gap = (bar_w - sum(leg_widths)) / max(len(top_langs) - 1, 1) if len(top_langs) > 1 else 0.0
-    lx = float(bar_x)
-    for i, lang in enumerate(top_langs):
-        w = (lang["pct"] / top_sum) * bar_w
-        if i == len(top_langs) - 1:
-            w = (bar_x + bar_w) - cur_x
-        bar_segs.append(f'<rect x="{cur_x:.1f}" y="{bar_y}" width="{max(w, 2.0):.1f}" height="6" rx="1.5" fill="{lang["color"]}"/>')
-        cur_x += w
-        lang_leg.append(
-            f'<circle cx="{lx + 4:.1f}" cy="{186 + off}" r="3.5" fill="{lang["color"]}"/>'
-            f'<text x="{lx + 12:.1f}" y="{189.5 + off}" font-family="{SANS}" font-size="10.5" font-weight="500" fill="{t["subtext"]}">{html.escape(lang["name"])} <tspan fill="{t["muted"]}">{lang["pct"]:.0f}%</tspan></text>'
-        )
-        lx += leg_widths[i] + leg_gap
-
-    # --- Band 4: 30d Waveform (Logarithmic Scale log1p, clean without peak badge or '(log)') ---
-    days = gh["last_30"]
-    n = len(days)
-    x0, x1 = 44.0, 818.0
-    wy_top, wy_bot = 252.0 + off, 314.0 + off
-    max_val = max((d["contributionCount"] for d in days), default=1)
-    y_scale_max = max(max_val, 5)
-    log_max = math.log1p(y_scale_max) or 1.0
-    pts = [
-        (
-            x0 + (i / max(n - 1, 1)) * (x1 - x0),
-            wy_bot - (math.log1p(d["contributionCount"]) / log_max) * (wy_bot - wy_top),
-        )
-        for i, d in enumerate(days)
-    ]
-    cmds = [f"M {pts[0][0]:.2f} {pts[0][1]:.2f}"]
-    for i in range(len(pts) - 1):
-        p0 = pts[i - 1] if i > 0 else pts[i]
-        p1, p2 = pts[i], pts[i + 1]
-        p3 = pts[i + 2] if i + 2 < len(pts) else p2
-        cp1x = p1[0] + (p2[0] - p0[0]) / 6.0
-        cp1y = max(wy_top - 3, min(wy_bot, p1[1] + (p2[1] - p0[1]) / 6.0))
-        cp2x = p2[0] - (p3[0] - p1[0]) / 6.0
-        cp2y = max(wy_top - 3, min(wy_bot, p2[1] - (p3[1] - p1[1]) / 6.0))
-        cmds.append(f"C {cp1x:.2f} {cp1y:.2f}, {cp2x:.2f} {cp2y:.2f}, {p2[0]:.2f} {p2[1]:.2f}")
-    line_d = " ".join(cmds)
-    area_d = f"{line_d} L {pts[-1][0]:.2f} {wy_bot:.2f} L {pts[0][0]:.2f} {wy_bot:.2f} Z"
-    peak_idx = max(range(n), key=lambda i: days[i]["contributionCount"]) if n else 0
-    peak_cnt = days[peak_idx]["contributionCount"] if n else 0
-    wave_dots = "".join(
-        f'<circle cx="{px:.1f}" cy="{py:.1f}" r="{3.2 if i == peak_idx else 1.8}" fill="{t["accent"]}" stroke="{t["dot_ring"]}" stroke-width="1"/>'
-        for i, (px, py) in enumerate(pts) if days[i]["contributionCount"] > 0
-    )
-    x_ticks = "".join(
-        f'<text x="{pts[idx][0]:.1f}" y="{332 + off}" text-anchor="{"start" if idx == 0 else ("end" if idx == n - 1 else "middle")}" font-family="{MONO}" font-size="9" fill="{t["faint"]}">{fmt_ddmm(days[idx]["date"])}</text>'
-        for idx in ([0, 7, 14, 21, n - 1] if n >= 22 else list(range(n)))
-    )
-    mid_y = (wy_top + wy_bot) / 2.0
-    mid_log_val = max(1, int(round(math.expm1(log_max * 0.5))))
-
-    # --- Band 5: Commit Schedule & Recently Committed (stacked language + date right) ---
-    b_total = sum(gh["buckets"].values()) or 1
-    peak_bucket = max(gh["buckets"].items(), key=lambda kv: kv[1])[0]
-    b_max = max(gh["buckets"].values()) or 1
-    bucket_rows = []
-    period_specs = (
-        ("Morning", "06h–12h", lambda cy, c: (
-            f'<path d="M27 {cy + 2.5}h10M29 {cy + 2.5}a3 3 0 0 1 6 0M32 {cy - 3.5}v1.5M28.5 {cy - 1.5}l1 1M35.5 {cy - 1.5}l-1 1" '
-            f'stroke="{c}" stroke-width="1.25" stroke-linecap="round" fill="none"/>'
-        )),
-        ("Daytime", "12h–18h", lambda cy, c: (
-            f'<circle cx="32" cy="{cy}" r="2.6" stroke="{c}" stroke-width="1.25" fill="none"/>'
-            f'<path d="M32 {cy - 4.6}v1.1M32 {cy + 3.5}v1.1M27.4 {cy}h1.1M35.5 {cy}h1.1M28.8 {cy - 3.2}l.8.8M34.4 {cy + 2.4}l.8.8M35.2 {cy - 3.2}l-.8.8M29.6 {cy + 2.4}l-.8.8" '
-            f'stroke="{c}" stroke-width="1.15" stroke-linecap="round"/>'
-        )),
-        ("Evening", "18h–24h", lambda cy, c: (
-            f'<path d="M27 {cy + 2}h10M29 {cy + 2}a3 3 0 0 1 6 0M32 {cy - 3.5}v1.5M29.5 {cy - 1.5}l2.5 1.8 2.5-1.8" '
-            f'stroke="{c}" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
-        )),
-        ("Night", "00h–06h", lambda cy, c: (
-            f'<path d="M34.8 {cy + 1.8}A3.9 3.9 0 0 1 30.2 {cy - 3.6}A3.7 3.7 0 1 0 34.8 {cy + 1.8}Z" '
-            f'stroke="{c}" stroke-width="1.25" stroke-linejoin="round" fill="none"/>'
-        )),
-    )
-    for idx, (label, window, icon_fn) in enumerate(period_specs):
-        cnt = gh["buckets"][label]
-        pct = (cnt / b_total) * 100.0
-        ry = 398 + off + idx * 23
-        is_peak = label == peak_bucket
-        bar_col = t["accent"] if is_peak else t["subtext"]
-        lbl_col = t["text"] if is_peak else t["subtext"]
-        icon_col = t["accent"] if is_peak else t["muted"]
-        bucket_rows.append(
-            icon_fn(ry - 3.5, icon_col)
-            + f'<text x="42" y="{ry}" font-family="{SANS}" font-size="11.2" font-weight="500" fill="{lbl_col}">{label} <tspan font-family="{MONO}" font-size="9.5" fill="{t["faint"]}">({window})</tspan></text>'
-            f'<text x="194" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="10.5" fill="{t["muted"]}">{cnt}</text>'
-            + render_pill_bar(204, ry - 7, 160, cnt / b_max, bar_col, t["bar_muted"])
-            + f'<text x="414" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="10.5" font-weight="600" fill="{bar_col if is_peak else t["muted"]}">{pct:.1f}%</text>'
-        )
-
-    wd_labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    wd_counts = gh["mon_sun"]
-    wd_peak = max(range(7), key=lambda i: wd_counts[i])
-    wd_pills = []
-    for i, (lbl, cnt) in enumerate(zip(wd_labels, wd_counts)):
-        px = 26 + i * 56
-        is_p = i == wd_peak
-        fill = t["accent_soft"] if is_p else t["card"]
-        stroke = t["accent_border"] if is_p else t["border"]
-        tc = t["accent"] if is_p else t["text"]
-        wd_pills.append(
-            f'<rect x="{px}" y="{484 + off}" width="50" height="28" rx="7" fill="{fill}" stroke="{stroke}"/>'
-            f'<text x="{px + 25}" y="{496 + off}" text-anchor="middle" font-family="{SANS}" font-size="8.5" fill="{t["muted"]}">{lbl}</text>'
-            f'<text x="{px + 25}" y="{507.5 + off}" text-anchor="middle" font-family="{MONO}" font-size="10" font-weight="600" fill="{tc}">{cnt}</text>'
-        )
-
-    repo_cards = []
-    fork_icon_path = "M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"
-    for i, r in enumerate(gh["recent_repos"]):
-        cy = 390 + off + i * 42
-        name_disp = truncate(r["name"], 24)
-        meta_x = 475.0 + len(name_disp) * 6.65 + 8.0
-        meta_parts = []
-        if r["stars"] > 0:
-            s_txt = f'★{r["stars"]}'
-            meta_parts.append(
-                f'<text x="{meta_x:.1f}" y="{cy + 14.5}" font-family="{MONO}" font-size="9.5" font-weight="500" fill="{t["muted"]}">{s_txt}</text>'
-            )
-            meta_x += len(s_txt) * 5.8 + 7.0
-        if r.get("forks", 0) > 0:
-            f_txt = str(r["forks"])
-            meta_parts.append(
-                f'<g transform="translate({meta_x:.1f}, {cy + 6.2:.1f}) scale(0.62)"><path d="{fork_icon_path}" fill="{t["muted"]}"/></g>'
-                f'<text x="{meta_x + 11.0:.1f}" y="{cy + 14.5}" font-family="{MONO}" font-size="9.5" font-weight="500" fill="{t["muted"]}">{f_txt}</text>'
-            )
-        repo_cards.append(
-            f'<rect x="450" y="{cy}" width="369" height="35" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>'
-            f'<circle cx="464" cy="{cy + 17.5}" r="3.5" fill="{r["color"]}"/>'
-            f'<text x="475" y="{cy + 14.5}" font-family="{MONO}" font-size="11" font-weight="600" fill="{t["text"]}">{html.escape(name_disp)}</text>'
-            + "".join(meta_parts)
-            + f'<text x="807" y="{cy + 14.5}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["muted"]}">{html.escape(r["language"])}</text>'
-            f'<text x="475" y="{cy + 27.5}" font-family="{SANS}" font-size="10" fill="{t["muted"]}">{html.escape(truncate(r["description"], 44))}</text>'
-            f'<text x="807" y="{cy + 27.5}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">{html.escape(r.get("commit_date") or "")}</text>'
-        )
-
-    # --- Band 6: WakaTime 3-Column Bento (Col 1: Coding Languages | Col 2: Editors | Col 3: Pace) ---
-    waka_svg = ""
+    # --- Band 3 Col 1: Activity + Pace (x = 26 .. 252, width = 226) ---
+    pace_cards_svg = ""
     if has_waka and waka is not None:
-        max_lang_sec = max((l["total_seconds"] for l in coding_langs), default=1.0)
-        w_eds = waka.get("editors", [])[:7]
-        max_ed_sec = max((float(e.get("total_seconds") or 0) for e in w_eds), default=1.0) or 1.0
         w_oss = waka.get("operating_systems", [])[:1]
-
-        w_lang_rows = []
-        for i, item in enumerate(coding_langs):
-            ry = 590 + off + i * 23
-            name = item["name"]
-            sec = item["total_seconds"]
-            dur = fmt_dur(sec)
-            pct = item["coding_pct"]
-            col = LANG_COLORS.get(name, t["accent"])
-            w_lang_rows.append(
-                f'<circle cx="30" cy="{ry - 3.5}" r="3.5" fill="{col}"/>'
-                f'<text x="40" y="{ry}" font-family="{SANS}" font-size="11" font-weight="500" fill="{t["text"]}">{html.escape(truncate(name, 13))}</text>'
-                f'<text x="168" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="10" fill="{t["muted"]}">{html.escape(dur)}</text>'
-                + render_pill_bar(176, ry - 7, 130, sec / max_lang_sec, col, t["bar_muted"])
-                + f'<text x="356" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="10" font-weight="600" fill="{t["subtext"]}">{pct:.1f}%</text>'
-            )
-
-        ed_rows = []
-        for i, e in enumerate(w_eds):
-            ry = 590 + off + i * 23
-            sec = float(e.get("total_seconds") or 0)
-            pct = float(e.get("percent") or 0)
-            ed_col = EDITOR_COLORS.get(e["name"], t["accent"])
-            ed_ratio = math.sqrt(max(0.0, sec) / max_ed_sec) if sec > 0 else 0.0
-            ed_rows.append(
-                f'<text x="384" y="{ry}" font-family="{SANS}" font-size="10.6" font-weight="500" fill="{t["text"]}">{html.escape(truncate(e["name"], 20))}</text>'
-                f'<text x="548" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.8" fill="{t["muted"]}">{html.escape(fmt_dur(sec))}</text>'
-                + render_pill_bar(556, ry - 7, 88, ed_ratio, ed_col, t["bar_muted"])
-                + f'<text x="685" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.8" font-weight="600" fill="{t["subtext"]}">{pct:.1f}%</text>'
-            )
-
         all_time_sec = float(w_oss[0].get("total_seconds") or 0) if w_oss else 0.0
         all_time_lbl = fmt_dur(all_time_sec) if all_time_sec > 0 else waka["total_text"]
         daily_avg_sec = float(waka.get("daily_avg_sec") or 0)
@@ -1188,165 +1054,154 @@ def render_unified_readme_svg(
         best_sec = float(best_day.get("total_seconds") or 0)
         best_lbl = fmt_dur(best_sec) if best_sec > 0 else "—"
         best_date_lbl = best_day.get("date") or ""
+        pace_cards_svg = f"""
+  <rect x="143" y="{50 + off}" width="109" height="42" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
+  <text x="152" y="{65 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">All time</text>
+  <text x="152" y="{83 + off}" font-family="{MONO}" font-size="13" font-weight="700" fill="url(#dashPaceFlow_{theme_name})">{html.escape(all_time_lbl)}</text>
 
-        p_y0 = 580 + off
-        pace_cards = f"""
-  <rect x="713" y="{p_y0}" width="106" height="45" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="723" y="{p_y0 + 16}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">All time</text>
-  <text x="723" y="{p_y0 + 35}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="url(#dashPaceFlow_{theme_name})">{html.escape(all_time_lbl)}</text>
+  <rect x="143" y="{99 + off}" width="109" height="42" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
+  <text x="152" y="{114 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Daily avg</text>
+  <text x="152" y="{132 + off}" font-family="{MONO}" font-size="13" font-weight="700" fill="{t["text"]}">{html.escape(daily_avg_lbl)}</text>
 
-  <rect x="713" y="{p_y0 + 53}" width="106" height="45" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="723" y="{p_y0 + 69}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Daily avg</text>
-  <text x="723" y="{p_y0 + 88}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["text"]}">{html.escape(daily_avg_lbl)}</text>
-
-  <rect x="713" y="{p_y0 + 106}" width="106" height="45" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="723" y="{p_y0 + 122}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Best day</text>
-  <text x="810" y="{p_y0 + 122}" text-anchor="end" font-family="{MONO}" font-size="8.8" fill="{t["faint"]}">{html.escape(best_date_lbl)}</text>
-  <text x="723" y="{p_y0 + 141}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["text"]}">{html.escape(best_lbl)}</text>
+  <rect x="143" y="{148 + off}" width="109" height="42" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
+  <text x="152" y="{163 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Best day</text>
+  <text x="244" y="{163 + off}" text-anchor="end" font-family="{MONO}" font-size="8.2" fill="{t["faint"]}">{html.escape(best_date_lbl)}</text>
+  <text x="152" y="{181 + off}" font-family="{MONO}" font-size="13" font-weight="700" fill="{t["text"]}">{html.escape(best_lbl)}</text>
 """
 
-        waka_svg = f"""
-  <!-- Band 6 Divider: WakaTime (3 Columns) -->
-  <line x1="26" y1="{530 + off}" x2="819" y2="{530 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="26" y="{553 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">WakaTime</text>
-  <text x="26" y="{571 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["faint"]}">CODING LANGUAGES</text>
-  <text x="384" y="{571 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["faint"]}">EDITORS</text>
-  <text x="713" y="{571 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["faint"]}">PACE</text>
-  <line x1="370" y1="{560 + off}" x2="370" y2="{734 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <line x1="699" y1="{560 + off}" x2="699" y2="{734 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
+    # --- Band 3 Col 2: WakaTime Coding Languages (x = 278 .. 546, width = 268) ---
+    waka_col_svg = ""
+    if has_waka and waka is not None:
+        max_lang_sec = max((l["total_seconds"] for l in coding_langs), default=1.0)
+        langs_disp = coding_langs[:6]
+        step_y = 24 if len(langs_disp) <= 6 else 21
+        start_y = 65 + off if len(langs_disp) <= 6 else 63 + off
+        w_lang_rows = []
+        for i, item in enumerate(langs_disp):
+            ry = start_y + i * step_y
+            name = item["name"]
+            sec = item["total_seconds"]
+            dur = fmt_dur(sec)
+            pct = item["coding_pct"]
+            col = LANG_COLORS.get(name, t["accent"])
+            w_lang_rows.append(
+                f'<circle cx="281.5" cy="{ry - 3.2}" r="3.2" fill="{col}"/>'
+                f'<text x="290" y="{ry}" font-family="{SANS}" font-size="10.6" font-weight="500" fill="{t["text"]}">{html.escape(truncate(name, 12))}</text>'
+                f'<text x="410" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["muted"]}">{html.escape(dur)}</text>'
+                + render_pill_bar(417, ry - 6.5, 90, sec / max_lang_sec, col, t["bar_muted"])
+                + f'<text x="546" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.5" font-weight="600" fill="{t["subtext"]}">{pct:.1f}%</text>'
+            )
+        waka_col_svg = f"""
+  <text x="278" y="{30 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">WakaTime</text>
+  <text x="546" y="{30 + off}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">Coding languages</text>
+  <line x1="278" y1="{40 + off}" x2="546" y2="{40 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
   {"".join(w_lang_rows)}
-  {"".join(ed_rows)}
-  {pace_cards}
 """
 
-    platforms_svg = ""
-    if has_bottom_platforms:
-        plat_y0 = base_bottom
-        p_gap = 12.0
-        n_plat = len(bottom_platforms)
-        card_w = (793.0 - (n_plat - 1) * p_gap) / n_plat
-        card_y = plat_y0 + 30
-        plat_cards = []
-        for idx, p in enumerate(bottom_platforms):
-            px = 26.0 + idx * (card_w + p_gap)
-            key = p.get("key") or ""
-            icon_col = t["text"] if key == "lichess" else p.get("dot_color", t["accent"])
-            hero_col = t["text"]
-            icon_d = PLAT_ICON_PATHS.get(key, "")
-            icon_el = (
-                f'<g transform="translate({px + 13:.1f}, {card_y + 10.0:.1f}) scale(0.52)"><path fill-rule="evenodd" clip-rule="evenodd" d="{icon_d}" fill="{icon_col}"/></g>'
-                if icon_d
-                else f'<circle cx="{px + 16:.1f}" cy="{card_y + 16.0}" r="3.2" fill="{icon_col}"/>'
-            )
-            plat_cards.append(
-                f'<rect x="{px:.1f}" y="{card_y}" width="{card_w:.1f}" height="{plat_card_h}" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>'
-                + icon_el
-                + f'<text x="{px + 30:.1f}" y="{card_y + 19.5}" font-family="{SANS}" font-size="11.2" font-weight="600" fill="{t["text"]}">{html.escape(p["name"])}</text>'
-                f'<text x="{px + card_w - 13:.1f}" y="{card_y + 19.5}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">{html.escape(p["handle"])}</text>'
-                f'<text x="{px + 13:.1f}" y="{card_y + 40.5}" font-family="{MONO}" font-size="15.5" font-weight="700" fill="{hero_col}">{html.escape(p["hero_val"])} <tspan font-family="{SANS}" font-size="10.2" font-weight="500" fill="{t["muted"]}">{html.escape(p["hero_unit"])}</tspan></text>'
-                f'<text x="{px + card_w - 13:.1f}" y="{card_y + 40.5}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["subtext"]}">{html.escape(p.get("right_meta") or "")}</text>'
-                f'<text x="{px + 13:.1f}" y="{card_y + 56}" font-family="{SANS}" font-size="9.6" fill="{t["muted"]}">{html.escape(p["sub_text"])}</text>'
-            )
-        platforms_svg = f"""
-  <!-- Band 7: External Platforms (Lichess, Chess.com, Brainly) -->
-  <line x1="26" y1="{plat_y0}" x2="819" y2="{plat_y0}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="26" y="{plat_y0 + 21}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Platforms</text>
-  {"".join(plat_cards)}
-"""
+    # --- Band 3 Col 3: Commit Schedule (x = 572 .. 819, width = 247) ---
+    b_total = sum(gh["buckets"].values()) or 1
+    peak_bucket = max(gh["buckets"].items(), key=lambda kv: kv[1])[0]
+    b_max = max(gh["buckets"].values()) or 1
+    bucket_rows = []
+    dx = 546  # shifts icon center from 32 -> 578
+    period_specs = (
+        ("Morning", lambda cy, c: (
+            f'<path d="M{27 + dx} {cy + 2.5}h10M{29 + dx} {cy + 2.5}a3 3 0 0 1 6 0M{32 + dx} {cy - 3.5}v1.5M{28.5 + dx} {cy - 1.5}l1 1M{35.5 + dx} {cy - 1.5}l-1 1" '
+            f'stroke="{c}" stroke-width="1.2" stroke-linecap="round" fill="none"/>'
+        )),
+        ("Daytime", lambda cy, c: (
+            f'<circle cx="{32 + dx}" cy="{cy}" r="2.5" stroke="{c}" stroke-width="1.2" fill="none"/>'
+            f'<path d="M{32 + dx} {cy - 4.4}v1.0M{32 + dx} {cy + 3.4}v1.0M{27.6 + dx} {cy}h1.0M{35.4 + dx} {cy}h1.0M{28.9 + dx} {cy - 3.1}l.7.7M{34.4 + dx} {cy + 2.4}l.7.7M{35.1 + dx} {cy - 3.1}l-.7.7M{29.6 + dx} {cy + 2.4}l-.7.7" '
+            f'stroke="{c}" stroke-width="1.1" stroke-linecap="round"/>'
+        )),
+        ("Evening", lambda cy, c: (
+            f'<path d="M{27 + dx} {cy + 2}h10M{29 + dx} {cy + 2}a3 3 0 0 1 6 0M{32 + dx} {cy - 3.5}v1.5M{29.5 + dx} {cy - 1.5}l2.5 1.8 2.5-1.8" '
+            f'stroke="{c}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+        )),
+        ("Night", lambda cy, c: (
+            f'<path d="M{34.6 + dx} {cy + 1.8}A3.8 3.8 0 0 1 {30.2 + dx} {cy - 3.5}A3.6 3.6 0 1 0 {34.6 + dx} {cy + 1.8}Z" '
+            f'stroke="{c}" stroke-width="1.2" stroke-linejoin="round" fill="none"/>'
+        )),
+    )
+    for idx, (label, icon_fn) in enumerate(period_specs):
+        cnt = gh["buckets"][label]
+        pct = (cnt / b_total) * 100.0
+        ry = 66 + off + idx * 23
+        is_peak = label == peak_bucket
+        bar_col = t["accent"] if is_peak else t["subtext"]
+        lbl_col = t["text"] if is_peak else t["subtext"]
+        icon_col = t["accent"] if is_peak else t["muted"]
+        bucket_rows.append(
+            icon_fn(ry - 3.5, icon_col)
+            + f'<text x="588" y="{ry}" font-family="{SANS}" font-size="10.4" font-weight="500" fill="{lbl_col}">{label}</text>'
+            f'<text x="672" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["muted"]}">{cnt}</text>'
+            + render_pill_bar(679, ry - 6.5, 96, cnt / b_max, bar_col, t["bar_muted"])
+            + f'<text x="819" y="{ry}" text-anchor="end" font-family="{MONO}" font-size="9.5" font-weight="600" fill="{bar_col if is_peak else t["muted"]}">{pct:.1f}%</text>'
+        )
+
+    wd_labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    wd_counts = gh["mon_sun"]
+    wd_peak = max(range(7), key=lambda i: wd_counts[i])
+    wd_pills = []
+    for i, (lbl, cnt) in enumerate(zip(wd_labels, wd_counts)):
+        px = 572 + i * 35.9
+        is_p = i == wd_peak
+        fill = t["accent_soft"] if is_p else t["card"]
+        stroke = t["accent_border"] if is_p else t["border"]
+        tc = t["accent"] if is_p else t["text"]
+        wd_pills.append(
+            f'<rect x="{px:.1f}" y="{158 + off}" width="31.5" height="32" rx="6.5" fill="{fill}" stroke="{stroke}"/>'
+            f'<text x="{px + 15.75:.1f}" y="{171 + off}" text-anchor="middle" font-family="{SANS}" font-size="7.8" fill="{t["muted"]}">{lbl}</text>'
+            f'<text x="{px + 15.75:.1f}" y="{183.5 + off}" text-anchor="middle" font-family="{MONO}" font-size="9.2" font-weight="600" fill="{tc}">{cnt}</text>'
+        )
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="845" height="{height}" viewBox="0 0 845 {height}" fill="none">
   <defs>
-    <linearGradient id="dashArea_{theme_name}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="{t["wave_top"]}" stop-opacity="0.22"/>
-      <stop offset="100%" stop-color="{t["wave_bot"]}" stop-opacity="0.0"/>
-    </linearGradient>
-{flowing_grad_def(f"dashLine_{theme_name}", theme_name, 44, 818, "7s")}
-{flowing_grad_def(f"dashContribFlow_{theme_name}", theme_name, 375, 495, "7s")}
-{flowing_grad_def(f"dashPaceFlow_{theme_name}", theme_name, 720, 815, "7s")}
+{flowing_grad_def(f"dashContribFlow_{theme_name}", theme_name, 36, 120, "7s")}
+{flowing_grad_def(f"dashPaceFlow_{theme_name}", theme_name, 152, 245, "7s")}
   </defs>
 
   <!-- ONE Unified Homogeneous Outer Frame -->
   <rect x="0.5" y="0.5" width="844" height="{height - 1}" rx="16" fill="{t["bg"]}" stroke="{t["border"]}"/>
 
-  <!-- Band 1: Tech Stack (32 full-bleed brand icons, 16x2) -->
+  <!-- Band 1: Tech Stack (16 AI/Data/Systems icons, full width) -->
   {tech_stack_svg}
 
-  <!-- Band 2: Pac-Man Contribution Graph (Log Scale) -->
-  <line x1="26" y1="125" x2="819" y2="125" stroke="{t["border_soft"]}" stroke-width="1"/>
+  <!-- Band 2: Pac-Man Contribution Graph (Standard Linear Scale) -->
+  <line x1="26" y1="74" x2="819" y2="74" stroke="{t["border_soft"]}" stroke-width="1"/>
   {pacman_svg}
 
-  <!-- Band 3: Overview & Activity -->
+  <!-- Band 3: Activity (+Pace) | WakaTime | Commit Schedule -->
   <line x1="26" y1="{off}" x2="819" y2="{off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="26" y="{30 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Overview</text>
-  <text x="334" y="{30 + off}" text-anchor="end" font-family="{MONO}" font-size="9.2" fill="{t["faint"]}">Academic Average (NSG): 85.1 / 100</text>
-  <line x1="26" y1="{40 + off}" x2="334" y2="{40 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  {"".join(ov_svg)}
+  <text x="26" y="{30 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Activity</text>
+  <text x="252" y="{30 + off}" text-anchor="end" font-family="{MONO}" font-size="8.8" fill="{t["faint"]}">★{gh["total_stars"]} · {gh["synced_date"]}</text>
+  <line x1="26" y1="{40 + off}" x2="252" y2="{40 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
 
-  <line x1="350" y1="{18 + off}" x2="350" y2="{196 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
+  <rect x="26" y="{50 + off}" width="109" height="42" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
+  <text x="35" y="{65 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Contributions</text>
+  <text x="35" y="{83 + off}" font-family="{MONO}" font-size="15" font-weight="700" fill="url(#dashContribFlow_{theme_name})">{fmt_num(gh["all_time_contributions"])}</text>
 
-  <text x="366" y="{30 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Activity</text>
-  <text x="819" y="{30 + off}" text-anchor="end" font-family="{MONO}" font-size="10" fill="{t["faint"]}">★{gh["total_stars"]} · {gh["followers"]} followers · {gh["synced_date"]}</text>
-  <line x1="366" y1="{40 + off}" x2="819" y2="{40 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
+  <rect x="26" y="{99 + off}" width="109" height="42" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
+  <text x="35" y="{114 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">Streak · Best</text>
+  <text x="35" y="{132 + off}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["text"]}">{gh["current_streak"]}d <tspan font-size="10.5" font-weight="500" fill="{t["muted"]}">· {gh["longest_streak"]}d</tspan></text>
 
-  <rect x="366" y="{50 + off}" width="144" height="50" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="378" y="{67 + off}" font-family="{SANS}" font-size="10.5" font-weight="500" fill="{t["muted"]}">Contributions</text>
-  <text x="378" y="{89 + off}" font-family="{MONO}" font-size="18" font-weight="700" fill="url(#dashContribFlow_{theme_name})">{fmt_num(gh["all_time_contributions"])}</text>
+  <rect x="26" y="{148 + off}" width="109" height="42" rx="9" fill="{t["card"]}" stroke="{t["border"]}"/>
+  <text x="35" y="{163 + off}" font-family="{SANS}" font-size="9.5" font-weight="500" fill="{t["muted"]}">PRs · Issues</text>
+  <text x="35" y="{181 + off}" font-family="{MONO}" font-size="13.5" font-weight="700" fill="{t["text"]}">{gh["pull_requests"]} <tspan font-size="11" font-weight="500" fill="{t["muted"]}">· {gh["issues"]}</tspan></text>
 
-  <rect x="520.5" y="{50 + off}" width="144" height="50" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="532.5" y="{67 + off}" font-family="{SANS}" font-size="10.5" font-weight="500" fill="{t["muted"]}">Commits (1y)</text>
-  <text x="532.5" y="{89 + off}" font-family="{MONO}" font-size="18" font-weight="700" fill="{t["text"]}">{fmt_num(gh["commits_1y"])}</text>
+  {pace_cards_svg}
 
-  <rect x="675" y="{50 + off}" width="144" height="50" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="687" y="{67 + off}" font-family="{SANS}" font-size="10.5" font-weight="500" fill="{t["muted"]}">Streak · Best</text>
-  <text x="687" y="{89 + off}" font-family="{MONO}" font-size="17" font-weight="700" fill="{t["text"]}">{gh["current_streak"]}d <tspan font-size="12" font-weight="500" fill="{t["muted"]}">· {gh["longest_streak"]}d</tspan></text>
+  <line x1="265" y1="{18 + off}" x2="265" y2="{194 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
 
-  <rect x="366" y="{107 + off}" width="144" height="42" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="378" y="{123 + off}" font-family="{SANS}" font-size="10" font-weight="500" fill="{t["muted"]}">Repositories</text>
-  <text x="378" y="{140 + off}" font-family="{MONO}" font-size="14" font-weight="600" fill="{t["text"]}">{gh["public_repos"]}</text>
+  {waka_col_svg}
 
-  <rect x="520.5" y="{107 + off}" width="144" height="42" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="532.5" y="{123 + off}" font-family="{SANS}" font-size="10" font-weight="500" fill="{t["muted"]}">PRs · Issues</text>
-  <text x="532.5" y="{140 + off}" font-family="{MONO}" font-size="14" font-weight="600" fill="{t["text"]}">{gh["pull_requests"]} · {gh["issues"]}</text>
+  <line x1="559" y1="{18 + off}" x2="559" y2="{194 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
 
-  <rect x="675" y="{107 + off}" width="144" height="42" rx="10" fill="{t["card"]}" stroke="{t["border"]}"/>
-  <text x="687" y="{123 + off}" font-family="{SANS}" font-size="10" font-weight="500" fill="{t["muted"]}">30d Daily Avg</text>
-  <text x="687" y="{140 + off}" font-family="{MONO}" font-size="14" font-weight="600" fill="{t["text"]}">{gh["avg_30d"]:.1f}</text>
-
-  <rect x="{bar_x}" y="{bar_y}" width="{bar_w}" height="6" rx="3" fill="{t["bar_muted"]}"/>
-  {"".join(bar_segs)}
-  {"".join(lang_leg)}
-
-  <!-- Band 4: 30d Waveform (Log Scale) -->
-  <line x1="26" y1="{210 + off}" x2="819" y2="{210 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="26" y="{234 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Contribution activity <tspan font-weight="400" fill="{t["muted"]}">· Last 30 days</tspan></text>
-  <text x="819" y="{234 + off}" text-anchor="end" font-family="{MONO}" font-size="10" fill="{t["muted"]}"><tspan fill="{t["text"]}" font-weight="600">{gh["total_30d"]}</tspan> total  ·  <tspan fill="{t["accent"]}" font-weight="600">{peak_cnt}</tspan> peak  ·  <tspan fill="{t["text"]}" font-weight="600">{gh["active_30d"]}/30</tspan> active</text>
-
-  <line x1="44" y1="{wy_top}" x2="818" y2="{wy_top}" stroke="{t["border_soft"]}" stroke-width="0.9" stroke-dasharray="3 4"/>
-  <line x1="44" y1="{mid_y}" x2="818" y2="{mid_y}" stroke="{t["border_soft"]}" stroke-width="0.9" stroke-dasharray="3 4"/>
-  <line x1="44" y1="{wy_bot}" x2="818" y2="{wy_bot}" stroke="{t["border"]}" stroke-width="1"/>
-  <text x="36" y="{wy_top + 3}" text-anchor="end" font-family="{MONO}" font-size="8.5" fill="{t["faint"]}">{y_scale_max}</text>
-  <text x="36" y="{mid_y + 3}" text-anchor="end" font-family="{MONO}" font-size="8.5" fill="{t["faint"]}">{mid_log_val}</text>
-  <text x="36" y="{wy_bot + 3}" text-anchor="end" font-family="{MONO}" font-size="8.5" fill="{t["faint"]}">0</text>
-
-  <path d="{area_d}" fill="url(#dashArea_{theme_name})"/>
-  <path d="{line_d}" fill="none" stroke="url(#dashLine_{theme_name})" stroke-width="2.2" stroke-linecap="round"/>
-  {wave_dots}
-  {x_ticks}
-
-  <!-- Band 5: Commit Schedule & Recently Committed Repositories -->
-  <line x1="26" y1="{348 + off}" x2="819" y2="{348 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="26" y="{372 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Commit schedule</text>
-  <text x="414" y="{372 + off}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["faint"]}">Peak: {peak_bucket}</text>
+  <text x="572" y="{30 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Commit schedule</text>
+  <text x="819" y="{30 + off}" text-anchor="end" font-family="{MONO}" font-size="9" fill="{t["faint"]}">Peak: {peak_bucket}</text>
+  <line x1="572" y1="{40 + off}" x2="819" y2="{40 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
   {"".join(bucket_rows)}
   {"".join(wd_pills)}
-
-  <line x1="432" y1="{360 + off}" x2="432" y2="{516 + off}" stroke="{t["border_soft"]}" stroke-width="1"/>
-  <text x="450" y="{372 + off}" font-family="{SANS}" font-size="13.5" font-weight="600" fill="{t["text"]}">Recently committed</text>
-  <text x="819" y="{372 + off}" text-anchor="end" font-family="{MONO}" font-size="9.5" fill="{t["faint"]}">{html.escape(gh.get("latest_commit_label") or "")}</text>
-  {"".join(repo_cards)}
-
-  {waka_svg}
-  {platforms_svg}
 </svg>
 '''
 
@@ -1375,13 +1230,11 @@ def render_plain_profile_md(
         "## Links & Socials",
         "- **GitHub:** https://github.com/Lealwbs",
         "- **LinkedIn:** https://www.linkedin.com/in/lealwbs",
+        "- **Email:** mailto:italoleallanasantos@gmail.com",
+        "- **Lattes CNPq:** http://lattes.cnpq.br/4756437356720090",
         "- **Hugging Face:** https://huggingface.co/Lealwbs",
         "- **Kaggle:** https://www.kaggle.com/lealwbs",
         "- **LeetCode:** https://leetcode.com/u/italoleallanasantos",
-        "- **Lattes CNPq:** http://lattes.cnpq.br/4756437356720090",
-        "- **Email:** mailto:italoleallanasantos@gmail.com",
-        "- **Discord:** `Leal#8905` (https://discord.com/users/Leal#8905)",
-        "- **Instagram:** https://www.instagram.com/Lealwbs",
         "- **Lichess:** https://lichess.org/@/Lealz",
         "- **Chess.com:** https://www.chess.com/member/lealz",
         "",
@@ -1393,8 +1246,8 @@ def render_plain_profile_md(
         "- **Member:** Stanford LC Talent Network",
         "- **President:** Liga ISMART UFMG",
         "",
-        "## Tech Stack (32 Tools)",
-        "- **AI, ML & Data:** Python, NumPy, scikit-learn, Pandas, Gradio, Apache Spark, PyTorch, FastAPI",
+        "## Tech Stack (33 Tools)",
+        "- **AI, ML & Data:** Python, NumPy, scikit-learn, Pandas, Gradio, Apache Spark, PyTorch, LightGBM, FastAPI",
         "- **Databases & Cloud:** MySQL, PostgreSQL, DuckDB, Redis, Supabase, Amazon Web Services (AWS), Azure, Docker",
         "- **Systems, Web/Mobile & Enterprise:** C, C++, Java, JavaScript, TypeScript, Tailwind CSS, React, Next.js, Expo, Vercel, Node.js, Render, Git, RISC-V, ABAP, SAP",
         "",
@@ -1459,7 +1312,7 @@ def render_llms_txt(
         "> Information Systems Undergraduate (7th Semester, UFMG, NSG 85.1/100), SAP ABAP Consultant at Seidor Brasil, President of Liga ISMART UFMG, Founder of Coletivo Voa Voa ENEM Prep, Harvard Aspire Leaders '25 Alumni, and Stanford LC Talent Network Member.",
         "",
         "## Primary Text Dossier",
-        "- [PROFILE.md](https://github.com/Lealwbs/Lealwbs/blob/main/PROFILE.md): Full machine-readable markdown telemetry (Overview, 32-tool Tech Stack, GitHub stats, Commit schedule, Recent repos, WakaTime, ML/Coding platforms, Chess & Brainly).",
+        "- [PROFILE.md](https://github.com/Lealwbs/Lealwbs/blob/main/PROFILE.md): Full machine-readable markdown telemetry (Overview, 33-tool Tech Stack, GitHub stats, Commit schedule, Recent repos, WakaTime, ML/Coding platforms, Chess & Brainly).",
         "- [README.md](https://github.com/Lealwbs/Lealwbs/blob/main/README.md): Visual SVG GitHub profile dashboard.",
         "",
         "## Live Snapshot",

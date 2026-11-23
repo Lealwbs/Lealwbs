@@ -3,7 +3,7 @@
 > Information Systems Undergraduate (7th Semester, UFMG, NSG 85.1/100), SAP ABAP Consultant at Seidor Brasil, President of Liga ISMART UFMG, Founder of Coletivo Voa Voa ENEM Prep, Harvard Aspire Leaders '25 Alumni, and Stanford LC Talent Network Member.
 
 ## Primary Text Dossier
-- [PROFILE.md](https://github.com/Lealwbs/Lealwbs/blob/main/PROFILE.md): Full machine-readable markdown telemetry (Overview, 32-tool Tech Stack, GitHub stats, Commit schedule, Recent repos, WakaTime, ML/Coding platforms, Chess & Brainly).
+- [PROFILE.md](https://github.com/Lealwbs/Lealwbs/blob/main/PROFILE.md): Full machine-readable markdown telemetry (Overview, 33-tool Tech Stack, GitHub stats, Commit schedule, Recent repos, WakaTime, ML/Coding platforms, Chess & Brainly).
 - [README.md](https://github.com/Lealwbs/Lealwbs/blob/main/README.md): Visual SVG GitHub profile dashboard.
 
 ## Live Snapshot
