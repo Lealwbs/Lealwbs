@@ -33,19 +33,19 @@
 - **Systems, Web/Mobile & Enterprise:** C, C++, Java, JavaScript, TypeScript, Tailwind CSS, React, Next.js, Expo, Vercel, Node.js, Render, Git, RISC-V, ABAP, SAP
 
 ## GitHub Activity
-- **All-Time Contributions:** 1,362
-- **Commits (1y):** 859
+- **All-Time Contributions:** 1,364
+- **Commits (1y):** 861
 - **Current Streak / Longest Streak:** 8d / 11d
 - **Public Repositories:** 24
 - **Pull Requests / Issues:** 7 / 25
-- **30d Daily Average:** 8.2
+- **30d Daily Average:** 8.3
 - **Stars / Followers:** 8 / 25
-- **Last 30 Days:** 246 total, 28 peak (09/11), 25/30 active days
+- **Last 30 Days:** 248 total, 28 peak (09/11), 25/30 active days
 - **Top Repository Languages:** Python (79%), C (7%), Jupyter Notebook (4%), HTML (3%)
 
 ## Commit Schedule (BRT / UTC-3)
 - **Time Buckets:** Morning (06h–12h): 49 (8.6%) | Daytime (12h–18h): 192 (33.6%) | Evening (18h–24h): 265 (46.3%) | Night (00h–06h): 66 (11.5%)
-- **Weekday Distribution:** Mon: 162 | Tue: 173 | Wed: 92 | Thu: 193 | Fri: 171 | Sat: 75 | Sun: 35
+- **Weekday Distribution:** Mon: 164 | Tue: 173 | Wed: 92 | Thu: 193 | Fri: 171 | Sat: 75 | Sun: 35
 
 ## Recently Committed Repositories
 - **kinorank** (Jupyter Notebook | ★2, 20/11): Recomendacao hibrida com ALS, FAISS, LightGBM e LLM
@@ -53,9 +53,9 @@
 - **engsoft** (Java, 16/11): Engenharia de Software - UFMG
 
 ## WakaTime Telemetry
-- **Pace:** All time: 266h 24m | Daily avg: 1h 54m | Best day: 10h 11m (20/11)
-- **Coding Languages:** Python (28h 59m, 26.1%), C (27h 6m, 24.4%), ABAP (17h 55m, 16.1%), JavaScript (17h 2m, 15.3%), TypeScript (8h 29m, 7.6%), Standard ML (3h 18m, 3.0%), Java (3h 6m, 2.8%)
-- **Editors & AI Tools:** Antigravity IDE (134h 44m, 50.6%), VS Code (62h 50m, 23.6%), Antigravity Desktop (34h 12m, 12.8%), Chrome (10h 58m, 4.1%), Copilot CLI (10h 26m, 3.9%), Codex Vscode (9h 6m, 3.4%), Antigravity (1h 42m, 0.6%)
+- **Pace:** All time: 270h 52m | Daily avg: 1h 55m | Best day: 10h 11m (20/11)
+- **Coding Languages:** Python (29h 4m, 26.2%), C (27h 6m, 24.4%), ABAP (17h 55m, 16.1%), JavaScript (17h 2m, 15.3%), TypeScript (8h 29m, 7.6%), Standard ML (3h 18m, 3.0%), Java (3h 6m, 2.8%)
+- **Editors & AI Tools:** Antigravity IDE (134h 44m, 49.7%), VS Code (62h 50m, 23.2%), Antigravity Desktop (34h 12m, 12.6%), Chrome (14h 31m, 5.4%), Copilot CLI (10h 26m, 3.9%), Codex Vscode (9h 6m, 3.4%), Antigravity (2h 36m, 1.0%)
 
 ## External Platforms
 - **Hugging Face (`@Lealwbs`):** 3 artifacts | 0 likes (1 models · 1 datasets · 1 spaces)
