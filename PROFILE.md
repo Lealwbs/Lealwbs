@@ -31,24 +31,24 @@
 - **Systems, Web/Mobile & Enterprise:** C, C++, Java, JavaScript, TypeScript, Tailwind CSS, React, Next.js, Expo, Vercel, Node.js, Render, Git, RISC-V, ABAP, SAP
 
 ## GitHub Activity
-- **All-Time Contributions:** 1,365
-- **Commits (1y):** 862
+- **All-Time Contributions:** 1,380
+- **Commits (1y):** 876
 - **Current Streak / Longest Streak:** 8d / 11d
 - **Public Repositories:** 24
-- **Pull Requests / Issues:** 7 / 25
-- **30d Daily Average:** 8.3
-- **Stars / Followers:** 8 / 26
-- **Last 30 Days:** 249 total, 28 peak (09/11), 25/30 active days
-- **Top Repository Languages:** Python (79%), C (7%), Jupyter Notebook (4%), HTML (3%)
+- **Pull Requests / Issues:** 8 / 25
+- **30d Daily Average:** 8.8
+- **Stars / Followers:** 9 / 27
+- **Last 30 Days:** 264 total, 28 peak (09/11), 25/30 active days
+- **Top Repository Languages:** Python (78%), C (7%), Jupyter Notebook (4%), HTML (3%)
 
 ## Commit Schedule (BRT / UTC-3)
-- **Time Buckets:** Morning (06h–12h): 49 (8.5%) | Daytime (12h–18h): 194 (33.8%) | Evening (18h–24h): 265 (46.2%) | Night (00h–06h): 66 (11.5%)
-- **Weekday Distribution:** Mon: 165 | Tue: 173 | Wed: 92 | Thu: 193 | Fri: 171 | Sat: 75 | Sun: 35
+- **Time Buckets:** Morning (06h–12h): 49 (8.5%) | Daytime (12h–18h): 196 (34.0%) | Evening (18h–24h): 266 (46.1%) | Night (00h–06h): 66 (11.4%)
+- **Weekday Distribution:** Mon: 180 | Tue: 173 | Wed: 92 | Thu: 193 | Fri: 171 | Sat: 75 | Sun: 35
 
 ## Recently Committed Repositories
+- **financ** (HTML, 23/11): Trabalho 1 - Simulador de Amortização (SAC e Tabela…
 - **kinorank** (Jupyter Notebook | ★2, 20/11): Recomendacao hibrida com ALS, FAISS, LightGBM e LLM
 - **TP-ES-Urna-Eleitoral** (Java, 19/11): Repositório dedicado à implementação do Trabalho Pr…
-- **engsoft** (Java, 16/11): Engenharia de Software - UFMG
 
 ## WakaTime Telemetry
 - **Pace:** All time: 270h 52m | Daily avg: 1h 55m | Best day: 10h 11m (20/11)
@@ -58,7 +58,7 @@
 ## External Platforms
 - **Hugging Face (`@Lealwbs`):** 3 artifacts | 0 likes (1 models · 1 datasets · 1 spaces)
 - **Kaggle (`@lealwbs`):** 1 published (0 notebooks · 1 datasets)
-- **LeetCode (`@italoleallanasantos`):** 118 solved | 54d active (97E · 18M · 3H)
+- **LeetCode (`@italoleallanasantos`):** 120 solved | 54d active (99E · 18M · 3H)
 - **Chess.com (`@lealz`):** 1,612 Rapid | Tactics 2,078 (Bullet 1337 · Blitz 1190 · 995g)
 - **Lichess (`@Lealz`):** 1,920 Bullet | 2,426 games (Rapid 1775 · Blitz 1603)
 - **Brainly (`@Leallana`):** 1,007 answers | 65,036 pts (194 best · 8.1k thanks · 866 Math)
