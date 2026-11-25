@@ -2,7 +2,7 @@
 
 > Machine-readable plain-text mirror of the live GitHub Profile (`README.md`). Auto-synced by GitHub Actions.
 
-- **Synced:** 24/11/2026
+- **Synced:** 25/11/2026
 - **Taglines:** Information Systems · UFMG | SAP ABAP Consultant · Seidor Brasil | AI Agents, Automation & Systems Engineering
 - **Location:** Contagem / Belo Horizonte, MG, Brazil
 
@@ -36,9 +36,9 @@
 - **Current Streak / Longest Streak:** 9d / 11d
 - **Public Repositories:** 24
 - **Pull Requests / Issues:** 8 / 25
-- **30d Daily Average:** 9.2
+- **30d Daily Average:** 8.6
 - **Stars / Followers:** 9 / 27
-- **Last 30 Days:** 277 total, 28 peak (09/11), 26/30 active days
+- **Last 30 Days:** 257 total, 28 peak (09/11), 25/30 active days
 - **Top Repository Languages:** Python (78%), C (7%), Jupyter Notebook (4%), HTML (3%)
 
 ## Commit Schedule (BRT / UTC-3)
