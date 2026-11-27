@@ -31,19 +31,19 @@
 - **Systems, Web/Mobile & Enterprise:** C, C++, Java, JavaScript, TypeScript, Tailwind CSS, React, Next.js, Expo, Vercel, Node.js, Render, Git, RISC-V, ABAP, SAP
 
 ## GitHub Activity
-- **All-Time Contributions:** 1,436
-- **Commits (1y):** 932
+- **All-Time Contributions:** 1,438
+- **Commits (1y):** 934
 - **Current Streak / Longest Streak:** 12d / 12d
 - **Public Repositories:** 24
 - **Pull Requests / Issues:** 8 / 25
-- **30d Daily Average:** 9.7
+- **30d Daily Average:** 9.8
 - **Stars / Followers:** 9 / 27
-- **Last 30 Days:** 291 total, 28 peak (09/11), 26/30 active days
+- **Last 30 Days:** 293 total, 28 peak (09/11), 26/30 active days
 - **Top Repository Languages:** Python (78%), C (7%), Jupyter Notebook (4%), HTML (3%)
 
 ## Commit Schedule (BRT / UTC-3)
 - **Time Buckets:** Morning (06h–12h): 49 (8.5%) | Daytime (12h–18h): 196 (34.0%) | Evening (18h–24h): 266 (46.1%) | Night (00h–06h): 66 (11.4%)
-- **Weekday Distribution:** Mon: 180 | Tue: 186 | Wed: 108 | Thu: 204 | Fri: 187 | Sat: 75 | Sun: 35
+- **Weekday Distribution:** Mon: 180 | Tue: 186 | Wed: 108 | Thu: 204 | Fri: 189 | Sat: 75 | Sun: 35
 
 ## Recently Committed Repositories
 - **financ** (HTML, 23/11): Trabalho 1 - Simulador de Amortização (SAC e Tabela…
