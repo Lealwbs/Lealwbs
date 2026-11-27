@@ -31,19 +31,19 @@
 - **Systems, Web/Mobile & Enterprise:** C, C++, Java, JavaScript, TypeScript, Tailwind CSS, React, Next.js, Expo, Vercel, Node.js, Render, Git, RISC-V, ABAP, SAP
 
 ## GitHub Activity
-- **All-Time Contributions:** 1,420
-- **Commits (1y):** 916
-- **Current Streak / Longest Streak:** 11d / 11d
+- **All-Time Contributions:** 1,436
+- **Commits (1y):** 932
+- **Current Streak / Longest Streak:** 12d / 12d
 - **Public Repositories:** 24
 - **Pull Requests / Issues:** 8 / 25
-- **30d Daily Average:** 9.2
+- **30d Daily Average:** 9.7
 - **Stars / Followers:** 9 / 27
-- **Last 30 Days:** 275 total, 28 peak (09/11), 25/30 active days
+- **Last 30 Days:** 291 total, 28 peak (09/11), 26/30 active days
 - **Top Repository Languages:** Python (78%), C (7%), Jupyter Notebook (4%), HTML (3%)
 
 ## Commit Schedule (BRT / UTC-3)
 - **Time Buckets:** Morning (06h–12h): 49 (8.5%) | Daytime (12h–18h): 196 (34.0%) | Evening (18h–24h): 266 (46.1%) | Night (00h–06h): 66 (11.4%)
-- **Weekday Distribution:** Mon: 180 | Tue: 186 | Wed: 108 | Thu: 204 | Fri: 171 | Sat: 75 | Sun: 35
+- **Weekday Distribution:** Mon: 180 | Tue: 186 | Wed: 108 | Thu: 204 | Fri: 187 | Sat: 75 | Sun: 35
 
 ## Recently Committed Repositories
 - **financ** (HTML, 23/11): Trabalho 1 - Simulador de Amortização (SAC e Tabela…
@@ -58,7 +58,7 @@
 ## External Platforms
 - **Hugging Face (`@Lealwbs`):** 3 artifacts | 0 likes (1 models · 1 datasets · 1 spaces)
 - **Kaggle (`@lealwbs`):** 1 published (0 notebooks · 1 datasets)
-- **LeetCode (`@italoleallanasantos`):** 123 solved | 53d active (102E · 18M · 3H)
+- **LeetCode (`@italoleallanasantos`):** 124 solved | 53d active (102E · 19M · 3H)
 - **Chess.com (`@lealz`):** 1,612 Rapid | Tactics 2,078 (Bullet 1337 · Blitz 1190 · 995g)
 - **Lichess (`@Lealz`):** 1,920 Bullet | 2,426 games (Rapid 1775 · Blitz 1603)
 - **Brainly (`@Leallana`):** 1,007 answers | 65,036 pts (194 best · 8.1k thanks · 866 Math)
