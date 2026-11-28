@@ -51,9 +51,9 @@
 - **TP-ES-Urna-Eleitoral** (Java, 19/11): Repositório dedicado à implementação do Trabalho Pr…
 
 ## WakaTime Telemetry
-- **Pace:** All time: 293h 30m | Daily avg: 2h 1m | Best day: 10h 11m (20/11)
-- **Coding Languages:** Python (29h 4m, 27.0%), C (27h 6m, 25.2%), ABAP (17h 55m, 16.6%), JavaScript (17h 2m, 15.8%), TypeScript (8h 29m, 7.9%), Java (3h 6m, 2.9%), Bash (1h 35m, 1.5%)
-- **Editors & AI Tools:** Antigravity IDE (134h 44m, 50.4%), VS Code (62h 50m, 23.5%), Antigravity Desktop (34h 45m, 13.0%), Codex Vscode (11h 18m, 4.2%), Copilot CLI (10h 26m, 3.9%), Antigravity (8h 27m, 3.2%), Eclipse (4h 49m, 1.8%)
+- **Pace:** All time: 302h 4m | Daily avg: 2h 4m | Best day: 10h 11m (20/11)
+- **Coding Languages:** Python (29h 6m, 27.0%), C (27h 6m, 25.1%), ABAP (17h 55m, 16.6%), JavaScript (17h 2m, 15.8%), TypeScript (8h 29m, 7.9%), Java (3h 6m, 2.9%), Bash (1h 35m, 1.5%)
+- **Editors & AI Tools:** Antigravity IDE (134h 44m, 49.9%), VS Code (62h 50m, 23.3%), Antigravity Desktop (35h 50m, 13.3%), Codex Vscode (11h 19m, 4.2%), Copilot CLI (10h 26m, 3.9%), Antigravity (10h 15m, 3.8%), Eclipse (4h 49m, 1.8%)
 
 ## External Platforms
 - **Hugging Face (`@Lealwbs`):** 3 artifacts | 0 likes (1 models · 1 datasets · 1 spaces)
